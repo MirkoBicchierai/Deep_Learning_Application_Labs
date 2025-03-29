@@ -1,0 +1,38 @@
+{
+  "os": "Linux-6.11.0-21-generic-x86_64-with-glibc2.39",
+  "python": "CPython 3.12.9",
+  "startedAt": "2025-03-29T20:47:03.936349Z",
+  "program": "/home/mirko/PycharmProjects/DLA-LAB/LAB_1/main.py",
+  "codePath": "main.py",
+  "email": "mirko.bicchierai@edu.unifi.it",
+  "root": "/home/mirko/PycharmProjects/DLA-LAB/LAB_1",
+  "host": "mirko-XPS-15-9510",
+  "executable": "/home/mirko/miniconda3/envs/DLA-LAB/bin/python",
+  "codePathLocal": "main.py",
+  "cpu_count": 8,
+  "cpu_count_logical": 16,
+  "gpu": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "510294114304",
+      "used": "274774663168"
+    }
+  },
+  "memory": {
+    "total": "16473956352"
+  },
+  "cpu": {
+    "count": 8,
+    "countLogical": 16
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+      "memoryTotal": "4294967296",
+      "cudaCores": 2560,
+      "architecture": "Ampere"
+    }
+  ],
+  "cudaVersion": "12.4"
+}
