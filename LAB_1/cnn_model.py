@@ -2,6 +2,16 @@ from typing import Optional, List
 import torch
 from torch import nn, Tensor
 
+"""
+Since the exercise specified that we could use the basic blocks of torch, I rewrote the code for these blocks and the ResNet class with some small 
+modifications. I removed many minor details that weren't necessary for these experiments and added the ability to disable skip-connections 
+(which can be seen in the forward method of the basic blocks), as this wasn't possible with the official implementation. 
+Regarding hyperparameters like stride, padding, etc., I kept torch's default values.
+
+A method was also added to the CNN class, get_feature(), which is identical to forward but returns the output of the last layer before the fully connected layer,
+specifically the avgpool output. This method was useful for exercise 2
+
+"""
 
 def conv3x3(in_planes: int, out_planes: int, stride: int = 1, groups: int = 1, dilation: int = 1) -> nn.Conv2d:
     """3x3 convolution with padding"""
@@ -64,7 +74,6 @@ class BasicBlock(nn.Module):
         if self.residual:
             if self.downsample is not None:
                 identity = self.downsample(x)
-
             out += identity
 
         out = self.relu(out)
@@ -175,5 +184,23 @@ class CNN(nn.Module):
         x = self.avgpool(x)
         x = torch.flatten(x, 1)
         x = self.fc(x)
+
+        return x
+
+
+    def get_feature(self, x: Tensor) -> Tensor:
+
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = self.relu(x)
+        x = self.maxpool(x)
+
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+
+        x = self.avgpool(x)
+        x = torch.flatten(x, 1)
 
         return x

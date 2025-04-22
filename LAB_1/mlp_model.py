@@ -1,5 +1,22 @@
 from torch import nn
 
+"""
+Multi-Layer Perceptron (MLP) with optional residual connections and normalization.
+
+This MLP consists of:
+- An input layer that projects input features to a specified width, optionally with BatchNorm.
+- A sequence of hidden layers with configurable depth, each optionally including BatchNorm.
+- Optional residual connections between hidden layers.
+- A final linear output layer projecting to the number of target classes.
+
+Args:
+    input_size (int): Dimensionality of the input features (flattened).
+    depth (int): Number of hidden layers.
+    width (int): Width (number of neurons) in each hidden layer.
+    classes (int): Number of output classes for classification.
+    residual (bool): If True, use residual connections between hidden layers.
+    normalization (bool): If True, include BatchNorm1d in input and hidden layers.
+"""
 
 class MLP(nn.Module):
     def __init__(self, input_size, depth, width, classes, residual, normalization):
@@ -21,7 +38,6 @@ class MLP(nn.Module):
 
         self.hidden_layers = nn.ModuleList()
         for _ in range(depth):
-
             if normalization:
                 self.hidden_layers.append(
                     nn.Sequential(
