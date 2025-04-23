@@ -8,7 +8,6 @@ from utils import get_dataloaders, str2bool, train, test, config_loggers_ex1
 import argparse
 import matplotlib.pyplot as plt
 
-
 """
 Computes and visualizes the gradient norms of each layer's weights and biases 
 for a single minibatch.
@@ -17,6 +16,7 @@ This is useful for diagnosing vanishing or exploding gradients during training.
 Gradients are computed via backpropagation on one batch from the provided dataloader.
 A bar plot of the L2 norms of gradients is generated and logged to Weights & Biases (wandb).
 """
+
 def gradient_norm(model, dataloader, device):
 
     data, labels = next(iter(dataloader))
@@ -30,6 +30,7 @@ def gradient_norm(model, dataloader, device):
     grad_weights = {}
     grad_biases = {}
     for name, param in model.named_parameters():
+        print(name)
         if param.grad is not None:
             if "weight" in name:
                 grad_weights[name] = param.grad.norm().item()
