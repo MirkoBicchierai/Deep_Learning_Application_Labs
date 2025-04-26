@@ -1,0 +1,1 @@
+Ricordarsi di scrivere che senza Lora ci vogliono circa 4 ore per fare 25 epoche mentre con lora circa 40 min + discorso batch_size

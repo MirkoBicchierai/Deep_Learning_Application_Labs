@@ -1,9 +1,10 @@
 import numpy as np
 import torch
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
 
 import wandb
 from sklearn.metrics import accuracy_score
-from sklearn.neighbors import KNeighborsClassifier
 from torch import nn
 from tqdm import tqdm
 from cnn_model import CNN
@@ -57,29 +58,31 @@ def feature_extractor(model, dataloader, device):
     return features.detach().cpu(), true_labels.detach().cpu()
 
 """
-Function that perform a KNN as baseline
+Function that perform a Linear SVM from sklearn as baseline
 """
-def knn_test(train_features, train_labels, test_features, test_labels):
+def base_test(train_features, train_labels, val_features, val_labels, test_features, test_labels):
 
     train_features = np.array(train_features)
     train_labels = np.array(train_labels)
+    val_features = np.array(val_features)
+    val_labels = np.array(val_labels)
     test_features = np.array(test_features)
     test_labels = np.array(test_labels)
 
-    # Normalize features (important for KNN)
-    train_features_mean = train_features.mean(axis=0)
-    train_features_std = train_features.std(axis=0)
-    train_features_normalized = (train_features - train_features_mean) / train_features_std
-    val_features_normalized = (test_features - train_features_mean) / train_features_std
+    # Normalize the features
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(train_features)
+    X_val_scaled = scaler.transform(val_features)
+    X_test_scaled = scaler.transform(test_features)
 
-    knn = KNeighborsClassifier(n_neighbors=4)
-    knn.fit(train_features_normalized, train_labels)
-    # Predict on validation set
-    val_predictions = knn.predict(val_features_normalized)
-    # Calculate accuracy
-    accuracy = accuracy_score(test_labels, val_predictions)
+    # Train SVM
+    clf = SVC(kernel='linear', max_iter=1000) # Set a max-iteration to 100 to don't have a time explosion
+    clf.fit(X_train_scaled, train_labels)
 
-    return accuracy
+    val_preds = clf.predict(X_val_scaled)
+    test_preds = clf.predict(X_test_scaled)
+
+    return  accuracy_score(val_labels, val_preds), accuracy_score(test_labels, test_preds)
 
 """
 This function configures a pre-trained model for fine-tuning on a new classification task.
@@ -126,12 +129,10 @@ def main():
     validation_features, validation_labels = feature_extractor(model, val_dataloader, device)
     test_features, test_labels = feature_extractor(model, test_dataloader, device)
 
-    #Get the accuracy on the validation/test set using a KNN on the extracted feature
-    val_accuracy = knn_test(train_features, train_labels, validation_features, validation_labels)
-    test_accuracy = knn_test(train_features, train_labels, test_features, test_labels)
-
-    print(f"Validation accuracy KNN: {val_accuracy}") # 13%
-    print(f"Test accuracy KNN: {test_accuracy}") # 12%
+    #Get the accuracy on the validation/test set using a Linear SVM on the extracted feature
+    val_accuracy, test_accuracy = base_test(train_features, train_labels, validation_features, validation_labels , test_features, test_labels)
+    print(f"Validation Accuracy: {val_accuracy}") # 0.2062
+    print(f"Test Accuracy: {test_accuracy}") # 0.1951
 
     setup_model(model, num_classes, num_layers=args.num_layers)
 
@@ -160,7 +161,6 @@ def main():
 
     wandb.log({"Exercise2/Test": {"Top1-Accuracy": top1, "Top5-Accuracy": top5}})
     print("Test accuracy: {}".format(top1))
-
 
 if "__main__" == __name__:
     main()

@@ -94,13 +94,6 @@ Without skip connections:
 ### CNN Accuracy on CIFAR
 ![W&B Chart 23_04_2025, 10_30_25.png](img/W%26B%20Chart%2023_04_2025%2C%2010_30_25.png)
 
-### Gradient norm on CNN with 24 BasicBlocks:
-With skip connections:
-![24 Residual.png](img/24%20Residual.png)
-
-Without skip connections:
-![24 No residual.png](img/24%20No%20residual.png)
-
 These are only some of the results from the conducted experiments. For a complete visualization, please check wandb (there are over 100 experiments).
 
 ## Results Exercise 2
@@ -109,10 +102,9 @@ For Exercise 2, I chose option 2.1, which involves fine-tuning a model from the 
 
 I selected one of the smaller CNNs with 8 BasicBlocks from those previously tested, since they all performed more or less the same on CIFAR10 in terms of performance.
 
-I used a KNN as a baseline on the extracted features of CIFAR100 from the model pretrained on CIFAR10, obtaining approximately 15% accuracy.
+I used a Linear SVM as a baseline on the extracted features of CIFAR100 from the model pretrained on CIFAR10, obtaining approximately 0.20% of accuracy on the validation set and test set.
 
 I fine-tuned the model by initially training only the new fully connected layer with output for 100 classes for CIFAR100, then unfreezing the first 3 layers, and after that the first 5 layers. In general, the Adam optimizer works better than SGD when more layers of the network are unfrozen.
 
 ![Top1.png](img/Top1.png)
 ![top5.png](img/top5.png)
-
