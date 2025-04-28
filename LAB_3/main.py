@@ -16,6 +16,9 @@ from utils import str2bool, config_loggers
 def get_parser():
     parser = argparse.ArgumentParser(description="Hyperparameter settings")
 
+    #Dataset choice
+    parser.add_argument("--dataset", type=str, default="rotten_tomatoes", help="Possible choose stanfordnlp/sst2 or rotten_tomatoes")
+
     # Exercise 1.3
     parser.add_argument("--check_baseLine", type=str2bool, default=False, help="If True compute the baseline using a linear SVM (Exercise 1.3)")
 
@@ -27,7 +30,7 @@ def get_parser():
     # basic optimizer parameters
     parser.add_argument("--lr", type=float, default=2e-5, help="Learning rate to fine tune distillibert")
     parser.add_argument("--epochs", type=int, default=10, help="Number of epochs to train for")
-    parser.add_argument("--batch_size", type=int, default=24, help="Batch size to train for")
+    parser.add_argument("--batch_size", type=int, default=20, help="Batch size to train for")
 
     args = parser.parse_args()
 
@@ -35,9 +38,15 @@ def get_parser():
 
 
 # Function that perform a test of the pretrained model output on the dataset rotten_tomatoes
-def test_output_model(tokenizer, model):
-    dataset = load_dataset("rotten_tomatoes", split="train")
-    sample_texts = [dataset[i]["text"] for i in range(3)]
+def test_output_model(dataset_name, tokenizer, model):
+    dataset = load_dataset(dataset_name, split="train")
+
+    if dataset_name == "stanfordnlp/sst2":
+        sample_texts = dataset.select(range(3))["sentence"]
+    else:
+        sample_texts = [dataset[i]["text"] for i in range(3)]
+
+    print("Example of 3 text in the train dataset",sample_texts)
 
     # Tokenize the sample texts
     inputs = tokenizer(sample_texts, padding=True, truncation=True, return_tensors="pt")
@@ -77,7 +86,7 @@ def get_split_embeddings(dataset_split, dataset, tokenizer, model):
     features = []
     labels = []
     for example in tqdm(dataset[dataset_split]):
-        text = example["text"]
+        text = example.get("text", example.get("sentence")) # In stanfordnlp/sst2 dataset the text is inside the key 'sentence' instead of 'text' for the other dataset
         label = example["label"]
         emb = extract_cls_embeddings([text], tokenizer, model)[0]
         features.append(emb)
@@ -89,7 +98,7 @@ def main():
     args = get_parser()
 
     # EXERCISE 1.1
-    dataset = load_dataset("rotten_tomatoes")
+    dataset = load_dataset(args.dataset) # stanfordnlp/sst2 , rotten_tomatoes
     print("\nDataset structure:")
     print(dataset)
 
@@ -108,34 +117,42 @@ def main():
     model_name = "distilbert-base-uncased"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModel.from_pretrained(model_name)
-    test_output_model(tokenizer, model)
+    test_output_model(args.dataset, tokenizer, model)
 
     # EXERCISE 1.3
     if args.check_baseLine:
-        x_train, y_train = get_split_embeddings("train", dataset, tokenizer, model)
-        x_val, y_val = get_split_embeddings("validation", dataset, tokenizer, model)
-        x_test, y_test = get_split_embeddings("test", dataset, tokenizer, model)
 
         scaler = StandardScaler()
+
+        x_train, y_train = get_split_embeddings("train", dataset, tokenizer, model)
+        x_val, y_val = get_split_embeddings("validation", dataset, tokenizer, model)
+
+        # The other dataset stanfordnlp/sst2 don't have the label on the test set
+        if args.dataset == "rotten_tomatoes":
+            x_test, y_test = get_split_embeddings("test", dataset, tokenizer, model)
+            x_test_scaled = scaler.transform(x_test)
+
         x_train_scaled = scaler.fit_transform(x_train)
         x_val_scaled = scaler.transform(x_val)
-        x_test_scaled = scaler.transform(x_test)
 
         clf = SVC(kernel='linear', max_iter=1000)
         clf.fit(x_train_scaled, y_train)
 
         val_pred = clf.predict(x_val_scaled)
-        test_pred = clf.predict(x_test_scaled)
+        print("Validation Accuracy (Base Line):", accuracy_score(y_val, val_pred))  # 0.8095684803001876 rotten_tomatoes, 0.6523 stanfordnlp/sst2
 
-        print("Validation Accuracy (Base Line):", accuracy_score(y_val, val_pred))  # 0.8095684803001876
-        print("Test Accuracy (Base Line):", accuracy_score(y_test, test_pred))  # 0.7917448405253283
+        # The other dataset stanfordnlp/sst2 don't have the label on the test set
+        if args.dataset == "rotten_tomatoes":
+            test_pred = clf.predict(x_test_scaled)
+            print("Test Accuracy (Base Line):", accuracy_score(y_test, test_pred))  # 0.7917448405253283 rotten_tomatoes
 
     # EXERCISE 2 (.1 .2 .3) and 3.1
 
     # Tokenization function
     def tokenize_function(example):
+        text = example.get("text", example.get("sentence")) # In stanfordnlp/sst2 dataset the text is inside the key 'sentence' instead of 'text' for the other dataset
         return tokenizer(
-            example["text"],
+            text,
             padding="max_length",  # For batching later
             truncation=True,
             max_length=512  # DistilBERT max length
@@ -217,17 +234,17 @@ def main():
     # Fine tune the model
     trainer.train()
 
-    wandb.config.update({"_wandb_disable_auto_logging": True}, allow_val_change=True) # I ask to chatgpt how can i disable the autologging of wandb only for the line below
-    # Evaluate on test set
-    test_results = trainer.evaluate(eval_dataset=tokenized_datasets["test"])
-    wandb.config.update({"_wandb_disable_auto_logging": False}, allow_val_change=True)
-    print(test_results)
-    wandb.log({
-        "test/accuracy": test_results["eval_accuracy"],
-        "test/precision": test_results["eval_precision"],
-        "test/recall": test_results["eval_recall"],
-        "test/f1": test_results["eval_f1"]
-    })
+    # The other dataset stanfordnlp/sst2 don't have the label on the test set
+    if args.dataset == "rotten_tomatoes":
+        # Evaluate on test set
+        test_results = trainer.evaluate(eval_dataset=tokenized_datasets["test"])
+        print(test_results)
+        wandb.log({
+            "test/accuracy": test_results["eval_accuracy"],
+            "test/precision": test_results["eval_precision"],
+            "test/recall": test_results["eval_recall"],
+            "test/f1": test_results["eval_f1"]
+        })
 
 if __name__ == "__main__":
     main()

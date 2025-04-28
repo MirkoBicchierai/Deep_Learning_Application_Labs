@@ -1,4 +1,4 @@
-# Deep Learning Architecture Lab
+# Deep Learning MLP/CNN Lab
 
 All experiments can be viewed on wandb at the following link:
 https://wandb.ai/AI-UNIFI/DLA_LAB_1?nw=nwusermirkobicchierai
