@@ -102,7 +102,7 @@ For Exercise 2, I chose option 2.1, which involves fine-tuning a model from the 
 
 I selected one of the smaller CNNs with 8 BasicBlocks from those previously tested, since they all performed more or less the same on CIFAR10 in terms of performance.
 
-I used a Linear SVM as a baseline on the extracted features of CIFAR100 from the model pretrained on CIFAR10, obtaining approximately 0.20% of accuracy on the validation set and test set.
+I used a Linear SVM as a baseline on the extracted features of CIFAR100 from the model pretrained on CIFAR10, obtaining approximately 20% of accuracy on the validation set and test set.
 
 I fine-tuned the model by initially training only the new fully connected layer with output for 100 classes for CIFAR100, then unfreezing the first 3 layers, and after that the first 5 layers. In general, the Adam optimizer works better than SGD when more layers of the network are unfrozen.
 
