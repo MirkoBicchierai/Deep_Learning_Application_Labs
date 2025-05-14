@@ -1,43 +1,35 @@
 import argparse
-
-import wandb
-from tqdm import tqdm
-
-from model import CNN
-from utils import str2bool, config_loggers, get_dataloaders, train, test, get_fake_loaders
-import torch
-import torchvision
-from torchvision.datasets import FakeData
-from torchvision import transforms
-import matplotlib.pyplot as plt
-import torch.nn.functional as F
-from torch import nn
-from torch import optim
+import random
 import numpy as np
 from sklearn import metrics
+import wandb
+from tqdm import tqdm
+from model import CNN, Autoencoder
+from utils import str2bool, config_loggers, get_dataloaders, get_fake_loaders, train_CNN, test_CNN, train_AE, test_AE, \
+    get_pred_CNN, max_logit, max_softmax, compute_scores
+import torch
+import matplotlib.pyplot as plt
+import torch.nn.functional as F
 
 def get_parser():
     parser = argparse.ArgumentParser(description="Hyperparameter settings")
 
-    #Dataset choice
-    parser.add_argument("--dataset", type=str, default="rotten_tomatoes", help="Possible choose stanfordnlp/sst2 or rotten_tomatoes")
+    #Pretrain parameters
+    parser.add_argument("--batch_size", type=int, default=256, help="Batch size")
+    parser.add_argument("--num_workers", type=int, default=12, help="Number of worker")
+    parser.add_argument("--epochs", type=int, default=200, help="Number of epochs")
+    parser.add_argument("--lr", type=float, default=1e-4, help="Learning rate")
 
-    # Exercise 1.3
-    parser.add_argument("--check_baseLine", type=str2bool, default=False, help="If True compute the baseline using a linear SVM (Exercise 1.3)")
+    # Pretrain CCN
+    parser.add_argument("--train_cnn", type=str2bool, default=False, help="If True Train the CNN Model")
+    # Pretrain AutoEncoder
+    parser.add_argument("--train_AE", type=str2bool, default=False, help="If True Train the AE Model")
 
     args = parser.parse_args()
 
     return args
 
-def main():
-    args = get_parser()
-    config_loggers(args)
-
-    batch_size = 256
-    num_workers = 12
-
-    train_dataloader, val_dataloader, test_dataloader, num_classes, input_size = get_dataloaders("CIFAR10", batch_size, num_workers=num_workers)
-    fake_dataloader = get_fake_loaders(batch_size, num_workers=num_workers)
+def test_fake_img(fake_dataloader, train_dataloader):
 
     for data in fake_dataloader:
         x, y = data
@@ -53,32 +45,187 @@ def main():
     class_dict = {class_name: id_class for id_class, class_name in enumerate(train_dataloader.dataset.dataset.classes)}
     print(class_dict)
 
+def main():
+    args = get_parser()
+    config_loggers(args)
+
+    train_dataloader, val_dataloader, test_dataloader, num_classes, input_size = get_dataloaders("CIFAR10", args.batch_size, num_workers=args.num_workers)
+    fake_dataloader = get_fake_loaders(args.batch_size, num_workers=args.num_workers)
+
+    test_fake_img(fake_dataloader, train_dataloader)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    model = CNN().to(device)
 
-    epochs = 200
-    lr = 1e-4
-    opt = torch.optim.Adam(params=model.parameters(), lr=lr)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs)
+    if args.train_cnn:
+        model = CNN().to(device)
+        opt = torch.optim.Adam(params=model.parameters(), lr=args.lr)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.epochs)
 
-    # Train loop
-    train_bar = tqdm(range(epochs), desc=f"[Training epochs]")
-    for epoch in train_bar:
-        loss = train(model, train_dataloader, opt, device, epoch, epochs)
-        accuracy, _, val_loss = test(model, val_dataloader, device)
-        scheduler.step()
+        # Train loop
+        train_bar = tqdm(range(args.epochs), desc=f"[Training epochs]")
+        for epoch in train_bar:
+            loss = train_CNN(model, train_dataloader, opt, device, epoch, args.epochs)
+            accuracy, _, val_loss = test_CNN(model, val_dataloader, device)
+            scheduler.step()
 
-        wandb.log({"Train-ES1": {"Loss": loss, "epoch": epoch},
-                   "Validation-ES1": {"Loss": val_loss, "Accuracy": accuracy, "epoch": epoch}})
+            wandb.log({"Train-CNN": {"Loss": loss, "epoch": epoch},
+                       "Validation-CNN": {"Loss": val_loss, "Accuracy": accuracy, "epoch": epoch}})
 
-        train_bar.set_postfix(epoch_loss=f"{loss:.4f}")
+            train_bar.set_postfix(epoch_loss=f"{loss:.4f}")
 
-    accuracy, _, _ = test(model, test_dataloader, device)
-    wandb.log({"Test-ES1": {"Accuracy": accuracy}})
-    print("Test accuracy: {}".format(accuracy))
+        accuracy, _, _ = test_CNN(model, test_dataloader, device)
+        wandb.log({"Test-CNN": {"Accuracy": accuracy}})
+        print("Test accuracy CNN: {}".format(accuracy))
 
-    torch.save(model.state_dict(), "Models/CNN_pretrain.pth")
+        torch.save(model.state_dict(), "Models/CNN_pretrain.pth")
 
+
+    if args.train_AE:
+        model = Autoencoder().to(device)
+        opt = torch.optim.Adam(params=model.parameters(), lr=args.lr)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.epochs)
+
+        # Train loop
+        train_bar = tqdm(range(args.epochs), desc=f"[Training epochs]")
+        for epoch in train_bar:
+            loss = train_AE(model, train_dataloader, opt, device, epoch, args.epochs)
+            _, val_loss = test_AE(model, val_dataloader, device)
+            scheduler.step()
+
+            wandb.log({"Train-AE": {"Loss": loss, "epoch": epoch},
+                       "Validation-AE": {"Loss": val_loss, "epoch": epoch}})
+
+            train_bar.set_postfix(epoch_loss=f"{loss:.4f}")
+
+        torch.save(model.state_dict(), "Models/AE_pretrain.pth")
+
+    # CNN - TEST with Fake
+
+    modelCNN = CNN().to(device)
+    modelCNN.load_state_dict(torch.load("Models/CNN_pretrain.pth"))
+
+    y_gt, y_pred = get_pred_CNN(modelCNN, test_dataloader, device)
+
+    y_pred_t = torch.cat(y_pred)
+    y_gt_t = torch.cat(y_gt)
+
+    accuracy = sum(y_pred_t == y_gt_t) / len(y_gt_t)
+    print(f'Accuracy: {accuracy}')
+
+    cm = metrics.confusion_matrix(y_gt_t.cpu(), y_pred_t.cpu())
+
+    cmn = cm.astype(np.float32)
+    cmn /= cmn.sum(1)
+
+    cmn = (100 * cmn).astype(np.int32)
+    disp = metrics.ConfusionMatrixDisplay(cmn, display_labels=test_dataloader.dataset.classes)
+    disp.plot()
+    plt.show()
+
+    cmn = cm.astype(np.float32)
+    cmn /= cmn.sum(1)
+    print(f'Per class accuracy: {np.diag(cmn).mean():.4f}')
+
+    for data in test_dataloader:
+        x, y = data
+        # plt.imshow(x[0,:].permute(1,2,0))
+        break
+
+    for data in fake_dataloader:
+        x_fake, _ = data
+        # plt.imshow(x[0,:].permute(1,2,0))
+        break
+
+    # WITH REAL DATA
+    k = random.randint(0, x.shape[0])
+    print(f'GT: {y[k]}, {test_dataloader.dataset.classes[y[k]]}')  # the corresponding label
+    output = modelCNN(x.to(device))
+    plt.bar(np.arange(10), output[k].detach().cpu())
+    plt.title('logit')
+    plt.show()
+    T = 1
+    plt.title(f'softmax t={T}')
+    s = F.softmax(output / T, 1)
+    plt.bar(np.arange(10), s[k].detach().cpu())
+    plt.show()
+
+    plt.imshow(x[k, :].permute(1, 2, 0))
+    plt.show()
+
+    # WITH FAKE DATA
+    k = 0  # the kth sample of the batch
+    output = modelCNN(x_fake.to(device))
+    plt.bar(np.arange(10), output[k].detach().cpu())
+    plt.title('logit')
+    plt.show()
+    T = 1
+    plt.title(f'softmax t={T}')
+    s = F.softmax(output / T, 1)
+    plt.bar(np.arange(10), s[k].detach().cpu())
+    plt.show()
+
+    plt.imshow(x_fake[0, :].permute(1, 2, 0))
+    plt.show()
+
+    # temp = 1000
+    # scores_test = compute_scores(testloader, lambda l: max_softmax(l, T=temp))
+    # scores_fake = compute_scores(fakeloader, lambda l: max_softmax(l, T=temp))
+
+    scores_test = compute_scores(modelCNN, test_dataloader, max_logit, device)
+    scores_fake = compute_scores(modelCNN, fake_dataloader, max_logit, device)
+
+    plt.plot(sorted(scores_test.cpu()), label='test')
+    plt.plot(sorted(scores_fake.cpu()), label='fake')
+    plt.legend()
+    plt.show()
+
+    plt.hist(scores_test.cpu(), density=True, alpha=0.5, bins=25, label='test')
+    plt.hist(scores_fake.cpu(), density=True, alpha=0.5, bins=25, label='fake')
+    plt.legend()
+    plt.show()
+
+    y_pred = torch.cat((scores_test, scores_fake))
+    y_test = torch.ones_like(scores_test)
+    y_fake = torch.zeros_like(scores_fake)
+    y = torch.cat((y_test, y_fake))
+
+    roc = metrics.RocCurveDisplay.from_predictions(y.cpu(), y_pred.cpu())
+    pr_display = metrics.PrecisionRecallDisplay.from_predictions(y.cpu(), y_pred.cpu())
+
+    fig = roc.figure_
+    fig.show()
+
+    fig = pr_display.figure_
+    fig.show()
+
+    # AE - TEST with Fake
+    
+    modelAE = Autoencoder().to(device)
+    modelAE.load_state_dict(torch.load("Models/AE_pretrain.pth"))
+
+    test_score, _ = test_AE(modelAE, test_dataloader, device)
+    fake_score, _ = test_AE(modelAE, fake_dataloader, device)
+
+    plt.plot(sorted(test_score.cpu()))
+    plt.plot(sorted(fake_score.cpu()))
+    plt.show()
+
+    plt.hist(test_score.cpu(), density=True, alpha=0.5, bins=25)
+    plt.hist(fake_score.cpu(), density=True, alpha=0.5, bins=25)
+    plt.show()
+
+    y_pred = torch.cat((test_score, fake_score))
+    y_test = torch.ones_like(test_score)
+    y_fake = torch.zeros_like(fake_score)
+
+    y = torch.cat((y_test, y_fake))
+    roc = metrics.RocCurveDisplay.from_predictions(y.cpu(), y_pred.cpu())
+    pr_display = metrics.PrecisionRecallDisplay.from_predictions(y.cpu(), y_pred.cpu())
+
+    fig = roc.figure_
+    fig.show()
+
+    fig = pr_display.figure_
+    fig.show()
 
 
 if __name__ == "__main__":

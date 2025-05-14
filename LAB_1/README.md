@@ -104,7 +104,7 @@ I selected one of the smaller CNNs with 8 BasicBlocks from those previously test
 
 I used a Linear SVM as a baseline on the extracted features of CIFAR100 from the model pretrained on CIFAR10, obtaining approximately 20% of accuracy on the validation set and test set.
 
-I fine-tuned the model by initially training only the new fully connected layer with output for 100 classes for CIFAR100, then unfreezing the first 3 layers, and after that the first 5 layers. In general, the Adam optimizer works better than SGD when more layers of the network are unfrozen.
+I fine-tuned the model by first training only the newly added fully connected layer for 100 classes on CIFAR-100. Then, I progressively unfroze the first 3 layers, followed by the first 5 layers. Overall, the Adam optimizer performed better than SGD as more layers were unfrozen. I also experimented with a cosine annealing scheduler for both optimizers (SGD and Adam). Interestingly, training without a scheduler yielded better results in my case. However, I was motivated to test the scheduler with Adam after reading the paper "Decoupled Weight Decay Regularization" (arXiv:1711.05101), which highlights the potential benefits of using a scheduler with Adam.
 
 ![Top1.png](img/Top1.png)
 ![top5.png](img/top5.png)

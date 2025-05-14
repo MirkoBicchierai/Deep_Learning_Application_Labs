@@ -2,6 +2,7 @@
 import numpy as np
 import torch
 from sklearn.metrics import accuracy_score
+from torch import nn
 from torch.utils.data import Subset
 from torchvision import transforms
 from torchvision.datasets import CIFAR10, CIFAR100, FakeData
@@ -21,11 +22,13 @@ def str2bool(v):
     return None
 
 def get_fake_loaders(batch_size, num_workers):
-
-    transform = transforms.Compose(
-        [transforms.ToTensor(),
-         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize(
+            mean=[0.4914, 0.4822, 0.4465],
+            std=[0.2470, 0.2435, 0.2616]
+        )
+    ])
     fake_dataset = FakeData(size=1000, image_size=(3, 32, 32), transform=transform)
     fake_dataloader = torch.utils.data.DataLoader(fake_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 
@@ -72,7 +75,7 @@ def get_dataloaders(name, batch_size, num_workers):
 
     return train_dataloader, val_dataloader, test_dataloader, num_classes, input_size
 
-def test(model, dataloader, device):
+def test_CNN(model, dataloader, device):
     model.eval()
     predictions = []
     gts = []
@@ -108,8 +111,21 @@ def test(model, dataloader, device):
 
     return top1_accuracy, top5_accuracy, avg_loss
 
+def get_pred_CNN(model, dataloader, device):
+    model.eval()
+    y_gt, y_pred = [], []
+    for it, data in enumerate(dataloader):
+        x, y = data
+        x, y = x.to(device), y.to(device)
 
-def train(model, dataloader, opt, device, epoch, epochs):
+        yp = model(x)
+
+        y_pred.append(yp.argmax(1))
+        y_gt.append(y)
+
+    return y_gt, y_pred
+
+def train_CNN(model, dataloader, opt, device, epoch, epochs):
     model.train()
     model = model.to(device)
     losses = []
@@ -118,8 +134,70 @@ def train(model, dataloader, opt, device, epoch, epochs):
         data = data.to(device)
         labels = labels.to(device)
         opt.zero_grad()
+
         logits = model(data)
         loss = F.cross_entropy(logits, labels)
+
+        loss.backward()
+        opt.step()
+        losses.append(loss.item())
+        train_bar.set_postfix(minibatch_loss=f"{loss.item():.4f}")
+    return np.mean(losses)
+
+def max_logit(logit):
+    s = logit.max(dim=1)[0] #get the max for each element of the batch
+    return s
+
+def max_softmax(logit, T=1.0):
+    s = F.softmax(logit/T, 1)
+    s = s.max(dim=1)[0] #get the max for each element of the batch
+    return s
+
+def compute_scores(model, data_loader, score_fun, device):
+    scores = []
+    with torch.no_grad():
+        for data in data_loader:
+            x, y = data
+            output = model(x.to(device))
+            s = score_fun(output)
+            scores.append(s)
+        scores_t = torch.cat(scores)
+        return scores_t
+
+def test_AE(model, dataloader, device):
+    model.eval()
+    # use negative MSE since higher error means OOD
+    loss = nn.MSELoss(reduction='none')
+    scores = []
+    losses = []
+    train_bar = tqdm(dataloader, desc="[Testing (Val/Test/Fake)]", leave=False)
+    with torch.no_grad():
+        for data in train_bar:
+            x, y = data
+            x = x.to(device)
+            z, xr = model(x)
+            l = loss(x, xr)
+            score = l.mean([1, 2, 3])
+
+            losses.append(score)
+            scores.append(-score)
+
+    scores = torch.cat(scores)
+    losses = torch.mean(torch.cat(losses))
+    return  scores, losses.item()
+
+def train_AE(model, dataloader, opt, device, epoch, epochs):
+    model.train()
+    model = model.to(device)
+    losses = []
+    train_bar = tqdm(dataloader, desc=f"Epoch {epoch + 1}/{epochs} [Training]", leave=False)
+    for data, _ in train_bar:
+        data = data.to(device)
+        opt.zero_grad()
+
+        z, x_rec = model(data)
+        loss = F.mse_loss(data, x_rec)
+
         loss.backward()
         opt.step()
         losses.append(loss.item())
