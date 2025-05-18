@@ -19,7 +19,7 @@ def get_parser():
 
     # FGSM Attack at training time as augmentation
     parser.add_argument("--aug_fgsm", type=str2bool, default=True, help="If True Train the model with fsgm as augmentations ")
-    parser.add_argument("--rand_epsilon", type=str2bool, default=False, help="If True use a random epsilon for fgsm between 0.01 and 1.5")
+    parser.add_argument("--rand_epsilon", type=str2bool, default=False, help="If True use a random epsilon for fgsm between 0.01 and 0.2")
     parser.add_argument("--epsilon", type=float, default=0.05, help="Epsilon for FGSM Attack at training time")
 
     # Pretrain CCN

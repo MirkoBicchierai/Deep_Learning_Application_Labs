@@ -215,10 +215,11 @@ def max_softmax(logit, t = 1.0):
     s = s.max(dim=1)[0] #get the max for each element of the batch
     return s
 
-def compute_scores(model, data_loader, score_fun, device):
+def compute_scores(model, dataloader, score_fun, device):
     scores = []
     with torch.no_grad():
-        for data in data_loader:
+        tqdm_bar = tqdm(dataloader, desc="[Testing (Val/Test/Fake)]", leave=False)
+        for data in tqdm_bar:
             x, y = data
             output = model(x.to(device))
             s = score_fun(output)
@@ -232,9 +233,9 @@ def test_AE(model, dataloader, device):
     loss = nn.MSELoss(reduction='none')
     scores = []
     losses = []
-    train_bar = tqdm(dataloader, desc="[Testing (Val/Test/Fake)]", leave=False)
+    tqdm_bar = tqdm(dataloader, desc="[Testing (Val/Test/Fake)]", leave=False)
     with torch.no_grad():
-        for data in train_bar:
+        for data in tqdm_bar:
             x, y = data
             x = x.to(device)
             z, xr = model(x)
@@ -281,7 +282,7 @@ def train_AE(model, dataloader, opt, device, epoch, args):
             data_denorm = denorm(data, mean, std, device) # Denormalize for fgsm
 
             if args.rand_epsilon:
-                epsilon = random.uniform(0.01, 1.5)
+                epsilon = random.uniform(0.01, 0.2)
                 data_adv = fgsm_attack(data_denorm, epsilon, data_grad) # Augmentation with fgsm with random epsilon
             else:
                 data_adv = fgsm_attack(data_denorm, args.epsilon, data_grad) # Augmentation with fgsm with static epsilon
