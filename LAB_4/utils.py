@@ -1,5 +1,4 @@
 import random
-
 import numpy as np
 import torch
 from sklearn.metrics import accuracy_score
@@ -22,7 +21,6 @@ def fgsm_attack(image, epsilon, data_grad):
     # Return the perturbed image
     return perturbed_image
 
-
 # restores the tensors to their original scale
 def denorm(batch, mean, std, device):
 
@@ -30,7 +28,6 @@ def denorm(batch, mean, std, device):
     std = torch.tensor(std).to(device)
 
     return batch * std.view(1, -1, 1, 1) + mean.view(1, -1, 1, 1)
-
 
 def str2bool(v):
     if isinstance(v, bool):
@@ -209,8 +206,6 @@ def train_CNN(model, dataloader, opt, device, epoch, args):
 
     return np.mean(losses_clean), np.mean(losses_adv) if len(losses_adv) > 0 else 0
 
-
-
 def max_logit(logit):
     s = logit.max(dim=1)[0] #get the max for each element of the batch
     return s
@@ -328,4 +323,3 @@ def config_loggers(args):
         config=vars(args),
         name=args.exp_name,
     )
-

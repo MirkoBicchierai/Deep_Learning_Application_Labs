@@ -140,6 +140,64 @@ def plot_result(epsilons, examples, metric, ty=None):
     plt.tight_layout()
     plt.show()
 
+
+def test_targeted_fgsm(model, args, test_loader, epsilon, target_class, mean, std, device):
+    correct = 0
+    targeted_success = 0
+    adv_examples = []
+
+    for data, target in tqdm(test_loader):
+        data, target = data.to(args.device), target.to(args.device)
+
+        # Skip batch if any of the samples are already predicted as the target class
+        with torch.no_grad():
+            output = model(data)
+            pred = output.max(1)[1]
+            if (pred == target_class).any():
+                continue
+
+        data.requires_grad = True
+
+        # Replace ground truth label with target label
+        target_labels = torch.full_like(target, target_class)
+
+        output = model(data)
+        loss = F.cross_entropy(output, target_labels)
+        model.zero_grad()
+        loss.backward()
+
+        data_grad = data.grad.data
+        data_denorm = denorm(data, mean, std, device)
+
+        # Generate adversarial example targeting `target_class`
+        perturbed_data = fgsm_attack(data_denorm, -epsilon, data_grad)  # Use -ε for targeted attack
+        perturbed_data_norm = transforms.Normalize(mean, std)(perturbed_data)
+
+        output = model(perturbed_data_norm)
+        final_pred = output.max(1)[1]
+
+        # Count correctly classified original examples
+        correct += (final_pred == target).sum().item()
+        targeted_success += (final_pred == target_labels).sum().item()
+
+        # Save some examples
+        for i in range(len(data)):
+            if len(adv_examples) < 5:
+                adv_ex = perturbed_data[i].squeeze().detach().cpu().numpy()
+                adv_examples.append((target[i].item(), final_pred[i].item(), adv_ex))
+
+    total = len(test_loader.dataset)
+    final_acc = correct / float(total)
+    targeted_acc = targeted_success / float(total)
+
+    print(f"Epsilon: {epsilon}")
+    print(f"Standard Accuracy: {correct}/{total} = {final_acc:.4f}")
+    print(
+        f"Targeted Attack Success Rate (class {target_class}): {targeted_success}/{total} = {targeted_acc:.4f}"
+    )
+
+    return final_acc, targeted_acc, adv_examples
+
 def get_parser():
     parser = argparse.ArgumentParser(description="Hyperparameter settings")
 
