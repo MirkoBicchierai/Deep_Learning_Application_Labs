@@ -112,7 +112,12 @@ def test_autoencoder(model, device, test_loader, epsilon, mean, std):
 def plot_result(epsilons, examples, metric, ty=None):
     plt.figure(figsize=(5, 5))
     plt.plot(epsilons, metric, "*-")
-    plt.title("Reconstruction Loss vs Epsilon")
+
+    if ty == "CNN":
+        plt.title("Accuracy vs Epsilon")
+    else:
+        plt.title("Reconstruction Loss vs Epsilon")
+
     plt.xlabel("Epsilon")
     plt.ylabel("MSE Loss")
     plt.show()
@@ -142,12 +147,11 @@ def plot_result(epsilons, examples, metric, ty=None):
 
 
 def test_targeted_fgsm(model, args, test_loader, epsilon, target_class, mean, std, device):
-    correct = 0
+
     targeted_success = 0
-    adv_examples = []
 
     for data, target in tqdm(test_loader):
-        data, target = data.to(args.device), target.to(args.device)
+        data, target = data.to(device), target.to(device)
 
         # Skip batch if any of the samples are already predicted as the target class
         with torch.no_grad():
@@ -176,27 +180,16 @@ def test_targeted_fgsm(model, args, test_loader, epsilon, target_class, mean, st
         output = model(perturbed_data_norm)
         final_pred = output.max(1)[1]
 
-        # Count correctly classified original examples
-        correct += (final_pred == target).sum().item()
         targeted_success += (final_pred == target_labels).sum().item()
 
-        # Save some examples
-        for i in range(len(data)):
-            if len(adv_examples) < 5:
-                adv_ex = perturbed_data[i].squeeze().detach().cpu().numpy()
-                adv_examples.append((target[i].item(), final_pred[i].item(), adv_ex))
 
     total = len(test_loader.dataset)
-    final_acc = correct / float(total)
     targeted_acc = targeted_success / float(total)
 
     print(f"Epsilon: {epsilon}")
-    print(f"Standard Accuracy: {correct}/{total} = {final_acc:.4f}")
-    print(
-        f"Targeted Attack Success Rate (class {target_class}): {targeted_success}/{total} = {targeted_acc:.4f}"
-    )
+    print(f"Targeted Attack Success Rate (class {target_class}): {targeted_success}/{total} = {targeted_acc:.4f}")
 
-    return final_acc, targeted_acc, adv_examples
+    return targeted_acc
 
 def get_parser():
     parser = argparse.ArgumentParser(description="Hyperparameter settings")
@@ -210,11 +203,25 @@ def get_parser():
     # Pretrain CCN
     parser.add_argument("--cnn", type=str2bool, default=True, help="If True use CNN Model")
     parser.add_argument("--cnn_ty", type=str2bool, default=True, help="If True use the CNN Model (more power), False use CNN2 Model")
-    parser.add_argument("--model_path_cnn", type=str, default="Models/CNN_pretrain_aug_rand.pth", help="Path of the CNN model pretrained")
+    parser.add_argument("--model_path_cnn", type=str, default="Models/CNN_pretrain.pth", help="Path of the CNN model pretrained")
+
+    parser.add_argument("--target_class", type=int, default=0, help="Target class (exercise 3.3)")
 
     args = parser.parse_args()
 
     return args
+
+
+def plot_target_attack(attack_success_rate, epsilons, target_class):
+
+    plt.figure(figsize=(8, 5))
+    plt.plot(epsilons, attack_success_rate, marker="o")
+    plt.xlabel("Epsilon")
+    plt.ylabel("Attack Success Rate")
+    plt.title("Attack Success Rate per Epsilon - Target class:" + str(target_class))
+    plt.ylim([0, 1])
+    plt.show()
+
 
 def main():
     args = get_parser()
@@ -236,14 +243,22 @@ def main():
 
         accuracies = []
         examples = []
+        attack_success_rate = []
+
         epsilons = [0, .05, .075, .1, .125, 1.5]
 
         for eps in tqdm(epsilons):
             acc, ex = test(modelCNN, device, test_dataloader, eps, mean, std)
+            targeted_acc = test_targeted_fgsm(modelCNN, args, test_dataloader, eps, args.target_class, mean, std, device) # Exercise 3.3
+            attack_success_rate.append(targeted_acc)
             accuracies.append(acc)
             examples.append(ex)
 
         plot_result(epsilons, examples, accuracies, ty="CNN")
+
+        # Exercise 3.3 plot
+        plot_target_attack(attack_success_rate, epsilons, args.target_class)
+
 
     if args.ae:
         modelAE = Autoencoder().to(device)
