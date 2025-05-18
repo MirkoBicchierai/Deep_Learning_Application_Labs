@@ -1,3 +1,4 @@
+import random
 
 import numpy as np
 import torch
@@ -9,6 +10,26 @@ from torchvision.datasets import CIFAR10, CIFAR100, FakeData
 from tqdm import tqdm
 import torch.nn.functional as F
 import wandb
+
+# FGSM attack code
+def fgsm_attack(image, epsilon, data_grad):
+    # Collect the element-wise sign of the data gradient
+    sign_data_grad = data_grad.sign()
+    # Create the perturbed image by adjusting each pixel of the input image
+    perturbed_image = image + epsilon * sign_data_grad
+    # Adding clipping to maintain [0,1] range
+    perturbed_image = torch.clamp(perturbed_image, 0, 1)
+    # Return the perturbed image
+    return perturbed_image
+
+
+# restores the tensors to their original scale
+def denorm(batch, mean, std, device):
+
+    mean = torch.tensor(mean).to(device)
+    std = torch.tensor(std).to(device)
+
+    return batch * std.view(1, -1, 1, 1) + mean.view(1, -1, 1, 1)
 
 
 def str2bool(v):
@@ -71,7 +92,7 @@ def get_dataloaders(name, batch_size, num_workers):
 
     train_dataloader = torch.utils.data.DataLoader(ds_train, batch_size, shuffle=True, num_workers=num_workers,pin_memory=True)
     val_dataloader = torch.utils.data.DataLoader(ds_val, batch_size, num_workers=num_workers, pin_memory=True)
-    test_dataloader = torch.utils.data.DataLoader(ds_test, batch_size, shuffle=True, num_workers=num_workers,pin_memory=True)
+    test_dataloader = torch.utils.data.DataLoader(ds_test, batch_size, shuffle=False, num_workers=num_workers,pin_memory=True)
 
     return train_dataloader, val_dataloader, test_dataloader, num_classes, input_size
 
@@ -125,31 +146,77 @@ def get_pred_CNN(model, dataloader, device):
 
     return y_gt, y_pred
 
-def train_CNN(model, dataloader, opt, device, epoch, epochs):
+def train_CNN(model, dataloader, opt, device, epoch, args):
     model.train()
     model = model.to(device)
-    losses = []
-    train_bar = tqdm(dataloader, desc=f"Epoch {epoch + 1}/{epochs} [Training]", leave=False)
+
+    mean = [0.4914, 0.4822, 0.4465]
+    std = [0.2470, 0.2435, 0.2616]
+
+    losses_clean = []
+    losses_adv = []
+
+    train_bar = tqdm(dataloader, desc=f"Epoch {epoch + 1}/{args.epochs} [Training]", leave=False)
     for data, labels in train_bar:
-        data = data.to(device)
-        labels = labels.to(device)
-        opt.zero_grad()
+        data, labels = data.to(device), labels.to(device)
 
-        logits = model(data)
-        loss = F.cross_entropy(logits, labels)
+        if args.aug_fgsm:
+            data.requires_grad = True
 
-        loss.backward()
-        opt.step()
-        losses.append(loss.item())
-        train_bar.set_postfix(minibatch_loss=f"{loss.item():.4f}")
-    return np.mean(losses)
+        logits_clean = model(data)
+        loss_clean = F.cross_entropy(logits_clean, labels)
+
+        if args.aug_fgsm:
+
+            # Backward to clean forward
+            model.zero_grad()
+            loss_clean.backward()
+            opt.step()
+
+            data_grad = data.grad.data
+            data_denorm = denorm(data, mean, std, device) # Denormalize for fgsm
+
+            if args.rand_epsilon:
+                epsilon = random.uniform(0.01, 1.5)
+                data_adv = fgsm_attack(data_denorm, epsilon, data_grad) # Augmentation with fgsm with random epsilon
+            else:
+                data_adv = fgsm_attack(data_denorm, args.epsilon, data_grad) # Augmentation with fgsm with static epsilon
+
+            data_adv = transforms.Normalize(mean, std)(data_adv) # Re-normalize for model input
+
+            # Forward pass on adversarial examples
+            logits_adv = model(data_adv)
+            loss_adv = F.cross_entropy(logits_adv, labels)
+
+            # Backward to adv forward
+            opt.zero_grad()
+            loss_adv.backward()
+            opt.step()
+
+            losses_clean.append(loss_clean.item())
+            losses_adv.append(loss_adv.item())
+
+            train_bar.set_postfix(minibatch_loss_clean=f"{loss_clean.item():.4f}", minibatch_loss_adv=f"{loss_adv.item():.4f}")
+
+        else:
+
+            opt.zero_grad()
+            loss_clean.backward()
+            opt.step()
+            losses_clean.append(loss_clean.item())
+            train_bar.set_postfix(minibatch_loss_clean=f"{loss_clean.item():.4f}")
+
+
+    return np.mean(losses_clean), np.mean(losses_adv) if len(losses_adv) > 0 else 0
+
+
 
 def max_logit(logit):
     s = logit.max(dim=1)[0] #get the max for each element of the batch
     return s
 
-def max_softmax(logit, T=1.0):
-    s = F.softmax(logit/T, 1)
+def max_softmax(logit, t = 1.0):
+    s = F.softmax(logit/t, 1)
     s = s.max(dim=1)[0] #get the max for each element of the batch
     return s
 
@@ -186,34 +253,79 @@ def test_AE(model, dataloader, device):
     losses = torch.mean(torch.cat(losses))
     return  scores, losses.item()
 
-def train_AE(model, dataloader, opt, device, epoch, epochs):
+def train_AE(model, dataloader, opt, device, epoch, args):
     model.train()
     model = model.to(device)
-    losses = []
-    train_bar = tqdm(dataloader, desc=f"Epoch {epoch + 1}/{epochs} [Training]", leave=False)
+
+    mean = [0.4914, 0.4822, 0.4465]
+    std = [0.2470, 0.2435, 0.2616]
+
+    losses_clean = []
+    losses_adv = []
+
+    train_bar = tqdm(dataloader, desc=f"Epoch {epoch + 1}/{args.epochs} [Training]", leave=False)
     for data, _ in train_bar:
         data = data.to(device)
+
+        if args.aug_fgsm:
+            data.requires_grad = True
+
         opt.zero_grad()
 
         z, x_rec = model(data)
-        loss = F.mse_loss(data, x_rec)
+        loss_clean = F.mse_loss(data, x_rec)
 
-        loss.backward()
-        opt.step()
-        losses.append(loss.item())
-        train_bar.set_postfix(minibatch_loss=f"{loss.item():.4f}")
-    return np.mean(losses)
+        if args.aug_fgsm:
+
+            # Backward to get gradients wrt input
+            model.zero_grad()
+            loss_clean.backward()
+            opt.step()
+
+            data_grad = data.grad.data
+            data_denorm = denorm(data, mean, std, device) # Denormalize for fgsm
+
+            if args.rand_epsilon:
+                epsilon = random.uniform(0.01, 1.5)
+                data_adv = fgsm_attack(data_denorm, epsilon, data_grad) # Augmentation with fgsm with random epsilon
+            else:
+                data_adv = fgsm_attack(data_denorm, args.epsilon, data_grad) # Augmentation with fgsm with static epsilon
+
+            data_adv = transforms.Normalize(mean, std)(data_adv) # Re-normalize for model input
+
+            # Forward pass on adversarial examples
+            z_adv, x_rec_adv = model(data_adv)
+            loss_adv =  F.mse_loss(data, x_rec_adv)
+
+            # Backward to adv forward
+            opt.zero_grad()
+            loss_adv.backward()
+            opt.step()
+
+            losses_clean.append(loss_clean.item())
+            losses_adv.append(loss_adv.item())
+
+            train_bar.set_postfix(minibatch_loss_clean=f"{loss_clean.item():.4f}", minibatch_loss_adv=f"{loss_adv.item():.4f}")
+
+        else:
+
+            opt.zero_grad()
+            loss_clean.backward()
+            opt.step()
+            losses_clean.append(loss_clean.item())
+            train_bar.set_postfix(minibatch_loss_clean=f"{loss_clean.item():.4f}")
+
+
+    return np.mean(losses_clean), np.mean(losses_adv) if len(losses_adv) > 0 else 0
 
 """
 Function to define the wandb parameters for the main.py 
 """
 def config_loggers(args):
 
-    exp_name = "_New"
-
     wandb.init(
         project="DLA_LAB_4",
         config=vars(args),
-        name=exp_name,
+        name=args.exp_name,
     )
 

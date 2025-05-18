@@ -8,15 +8,24 @@ import torch
 def get_parser():
     parser = argparse.ArgumentParser(description="Hyperparameter settings")
 
+    #wandb
+    parser.add_argument("--exp_name", type=str, default="_New", help="Experiment name wandb")
+
     #Pretrain parameters
     parser.add_argument("--batch_size", type=int, default=256, help="Batch size")
     parser.add_argument("--num_workers", type=int, default=12, help="Number of worker")
     parser.add_argument("--epochs", type=int, default=200, help="Number of epochs")
     parser.add_argument("--lr", type=float, default=1e-4, help="Learning rate")
 
+    # FGSM Attack at training time as augmentation
+    parser.add_argument("--aug_fgsm", type=str2bool, default=True, help="If True Train the model with fsgm as augmentations ")
+    parser.add_argument("--rand_epsilon", type=str2bool, default=False, help="If True use a random epsilon for fgsm between 0.01 and 1.5")
+    parser.add_argument("--epsilon", type=float, default=0.05, help="Epsilon for FGSM Attack at training time")
+
     # Pretrain CCN
     parser.add_argument("--train_cnn", type=str2bool, default=True, help="If True Train the CNN Model")
-    parser.add_argument("--cnn_ty", type=str2bool, default=True, help="If True use the CNN Model (more power), False use CNN2 Model")
+    parser.add_argument("--cnn_ty", type=str2bool, default=False, help="If True use the CNN Model (more power), False use CNN2 Model")
+
     # Pretrain AutoEncoder
     parser.add_argument("--train_AE", type=str2bool, default=False, help="If True Train the AE Model")
 
@@ -31,6 +40,7 @@ def main():
     train_dataloader, val_dataloader, test_dataloader, num_classes, input_size = get_dataloaders("CIFAR10", args.batch_size, num_workers=args.num_workers)
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    add_name = "rand" if args.rand_epsilon else str(args.epsilon)
 
     if args.train_cnn:
 
@@ -41,20 +51,23 @@ def main():
             model = CNN2().to(device)
             model_name = "CNN2_pretrain"
 
+        if args.aug_fgsm:
+            model_name = model_name + "_aug_" + add_name
+
         opt = torch.optim.Adam(params=model.parameters(), lr=args.lr)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.epochs)
 
         # Train loop
         train_bar = tqdm(range(args.epochs), desc=f"[Training epochs]")
         for epoch in train_bar:
-            loss = train_CNN(model, train_dataloader, opt, device, epoch, args.epochs)
+            loss_clean, loss_adv = train_CNN(model, train_dataloader, opt, device, epoch, args)
             accuracy, _, val_loss = test_CNN(model, val_dataloader, device)
             scheduler.step()
 
-            wandb.log({"Train-CNN": {"Loss": loss, "epoch": epoch},
+            wandb.log({"Train-CNN": {"Loss": loss_clean, "Loss_adv": loss_adv, "epoch": epoch},
                        "Validation-CNN": {"Loss": val_loss, "Accuracy": accuracy, "epoch": epoch}})
 
-            train_bar.set_postfix(epoch_loss=f"{loss:.4f}")
+            train_bar.set_postfix(epoch_loss_clean=f"{loss_clean:.4f}", epoch_loss_adv=f"{loss_adv:.4f}")
 
         accuracy, _, _ = test_CNN(model, test_dataloader, device)
         wandb.log({"Test-CNN": {"Accuracy": accuracy}})
@@ -64,6 +77,11 @@ def main():
 
 
     if args.train_AE:
+
+        model_name = "AE_pretrain"
+        if args.aug_fgsm:
+            model_name = model_name + "_aug_" + add_name
+
         model = Autoencoder().to(device)
         opt = torch.optim.Adam(params=model.parameters(), lr=args.lr)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.epochs)
@@ -71,16 +89,16 @@ def main():
         # Train loop
         train_bar = tqdm(range(args.epochs), desc=f"[Training epochs]")
         for epoch in train_bar:
-            loss = train_AE(model, train_dataloader, opt, device, epoch, args.epochs)
+            loss_clean, loss_adv = train_AE(model, train_dataloader, opt, device, epoch, args)
             _, val_loss = test_AE(model, val_dataloader, device)
             scheduler.step()
 
-            wandb.log({"Train-AE": {"Loss": loss, "epoch": epoch},
+            wandb.log({"Train-AE": {"Loss": loss_clean, "Loss_adv": loss_adv, "epoch": epoch},
                        "Validation-AE": {"Loss": val_loss, "epoch": epoch}})
 
-            train_bar.set_postfix(epoch_loss=f"{loss:.4f}")
+            train_bar.set_postfix(epoch_loss=f"{loss_clean:.4f}", epoch_loss_adv=f"{loss_adv:.4f}")
 
-        torch.save(model.state_dict(), "Models/AE_pretrain.pth")
+        torch.save(model.state_dict(), "Models/"+model_name+".pth")
 
 
 if __name__ == "__main__":
