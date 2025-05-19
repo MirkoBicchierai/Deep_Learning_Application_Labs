@@ -137,7 +137,7 @@ python es.py [--options]
 ### AutoEncoder Model
 
 <details>
-  <summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">🔍 Auto Encoder Vanilla Model</summary>
+  <summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid black;">🔍 Auto Encoder Vanilla Model</summary>
 
 <table>
   <tr>
@@ -153,7 +153,7 @@ python es.py [--options]
 </details>
 <br>
 <details>
-<summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">🔍 Auto Encoder model with FGSM as augmentation at training time with a random epsilon between 0.01 and 0.15 </summary>
+<summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid black;">🔍 Auto Encoder model with FGSM as augmentation at training time with a random epsilon between 0.01 and 0.15 </summary>
 <br>
 
 <table>
@@ -170,7 +170,7 @@ python es.py [--options]
 </details>
 <br>
 <details>
-<summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">🔍 Auto Encoder model with FGSM as augmentation with fixed epsilon 0.05</summary>
+<summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid black;">🔍 Auto Encoder model with FGSM as augmentation with fixed epsilon 0.05</summary>
 <br>
 
 <table>
@@ -187,7 +187,7 @@ python es.py [--options]
 </details>
 <br>
 <details>
-<summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">🔍 Auto Encoder model with FGSM as augmentation with fixed epsilon 0.1</summary>
+<summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid black;">🔍 Auto Encoder model with FGSM as augmentation with fixed epsilon 0.1</summary>
 <br>
 
 <table>
