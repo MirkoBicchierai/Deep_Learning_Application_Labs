@@ -137,58 +137,65 @@ python es.py [--options]
 ### AutoEncoder Model
 
 <details>
-<summary>Auto Encoder vanilla model</summary>
-<br>
+  <summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">🔍 Auto Encoder Vanilla Model</summary>
 
 <table>
   <tr>
     <td><img src="plot/es1/AE_pretrain_score_.png" alt="AE_pretrain_score_"></td>
     <td><img src="plot/es1/AE_pretrain_score_hist_.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
     <td><img src="plot/es1/AE_pretrain_roc_curve_.png" alt="AE_pretrain_roc_curve_"></td>
     <td><img src="plot/es1/AE_pretrain_precision_recall_curve_.png" alt="AE_pretrain_precision_recall_curve_"></td>
   </tr>
 </table>
 
 </details>
-
+<br>
 <details>
-<summary>Auto Encoder model with FGSM as augmentation at training time with a random epsilon between 0.01 and 0.15 </summary>
+<summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">🔍 Auto Encoder model with FGSM as augmentation at training time with a random epsilon between 0.01 and 0.15 </summary>
 <br>
 
 <table>
   <tr>
     <td><img src="plot/es1/AE_pretrain_aug_rand_score_.png" alt="AE_pretrain_aug_rand_score_"></td>
     <td><img src="plot/es1/AE_pretrain_aug_rand_score_hist_.png" alt="AE_pretrain_aug_rand_score_hist_"></td>
+  </tr>  
+  <tr>
     <td><img src="plot/es1/AE_pretrain_aug_rand_roc_curve_.png" alt="AE_pretrain_aug_rand_roc_curve_"></td>
     <td><img src="plot/es1/AE_pretrain_aug_rand_precision_recall_curve_.png" alt="AE_pretrain_aug_rand_precision_recall_curve_"></td>
   </tr>
 </table>
 
 </details>
-
+<br>
 <details>
-<summary>Auto Encoder model with FGSM as augmentation with fixed epsilon 0.05</summary>
+<summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">🔍 Auto Encoder model with FGSM as augmentation with fixed epsilon 0.05</summary>
 <br>
 
 <table>
   <tr>
     <td><img src="plot/es1/AE_pretrain_aug_0.05_score_.png" alt="AE_pretrain_aug_0.1_score_"></td>
     <td><img src="plot/es1/AE_pretrain_aug_0.05_score_hist_.png" alt="AE_pretrain_aug_0.1_score_hist_"></td>
+  </tr>  
+  <tr>
     <td><img src="plot/es1/AE_pretrain_aug_0.05_roc_curve_.png" alt="AE_pretrain_aug_0.1_roc_curve_"></td>
     <td><img src="plot/es1/AE_pretrain_aug_0.05_precision_recall_curve_.png" alt="AE_pretrain_aug_0.1_precision_recall_curve_"></td>
   </tr>
 </table>
 
 </details>
-
+<br>
 <details>
-<summary>Auto Encoder model with FGSM as augmentation with fixed epsilon 0.1</summary>
+<summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">🔍 Auto Encoder model with FGSM as augmentation with fixed epsilon 0.1</summary>
 <br>
 
 <table>
   <tr>
     <td><img src="plot/es1/AE_pretrain_aug_0.1_score_.png" alt="AE_pretrain_aug_0.1_score_"></td>
     <td><img src="plot/es1/AE_pretrain_aug_0.1_score_hist_.png" alt="AE_pretrain_aug_0.1_score_hist_"></td>
+  </tr>  
+  <tr>
     <td><img src="plot/es1/AE_pretrain_aug_0.1_roc_curve_.png" alt="AE_pretrain_aug_0.1_roc_curve_"></td>
     <td><img src="plot/es1/AE_pretrain_aug_0.1_precision_recall_curve_.png" alt="AE_pretrain_aug_0.1_precision_recall_curve_"></td>
   </tr>
