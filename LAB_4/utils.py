@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score
 from torch import nn
 from torch.utils.data import Subset
 from torchvision import transforms
-from torchvision.datasets import CIFAR10, CIFAR100, FakeData
+from torchvision.datasets import CIFAR10, FakeData
 from tqdm import tqdm
 import torch.nn.functional as F
 import wandb

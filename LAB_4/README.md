@@ -133,7 +133,76 @@ python es.py [--options]
 
 ### Result Exercise 1
 
+An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake data (taken from `torchvision.datasets.FakeData`).
+
+<table>
+  <tr>
+    <td><img src="plot/es1/Real%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/Fake%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>
+</table>
+
 ### CNN and CNN2 Models
+
+<details>
+  <summary style="font-weight: bold; padding: 5px;">🔍 CNN2 Vanilla Model</summary>
+
+</details>
+
+<br>
+
+<details>
+<summary style="font-weight: bold; padding: 5px;">🔍 CNN2 model with FGSM as augmentation at training time with a random epsilon between 0.01 and 0.15 </summary>
+<br>
+
+</details>
+
+<br>
+
+<details>
+<summary style="font-weight: bold; padding: 5px;">🔍 CNN2 model with FGSM as augmentation with fixed epsilon 0.05</summary>
+<br>
+
+</details>
+
+<br>
+
+<details>
+<summary style="font-weight: bold; padding: 5px;">🔍 CNN2 model with FGSM as augmentation with fixed epsilon 0.1</summary>
+<br>
+
+</details>
+
+<br>
+
+<details>
+  <summary style="font-weight: bold; padding: 5px;">🔍 CNN Vanilla Model</summary>
+
+</details>
+
+<br>
+
+<details>
+<summary style="font-weight: bold; padding: 5px;">🔍 CNN model with FGSM as augmentation at training time with a random epsilon between 0.01 and 0.15 </summary>
+<br>
+
+</details>
+
+<br>
+
+<details>
+<summary style="font-weight: bold; padding: 5px;">🔍 CNN model with FGSM as augmentation with fixed epsilon 0.05</summary>
+<br>
+
+</details>
+
+<br>
+
+<details>
+<summary style="font-weight: bold; padding: 5px;">🔍 CNN model with FGSM as augmentation with fixed epsilon 0.1</summary>
+<br>
+
+</details>
 
 ### AutoEncoder Model
 
