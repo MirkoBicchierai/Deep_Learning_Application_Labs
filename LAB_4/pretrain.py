@@ -9,25 +9,25 @@ def get_parser():
     parser = argparse.ArgumentParser(description="Hyperparameter settings")
 
     #wandb
-    parser.add_argument("--exp_name", type=str, default="_New", help="Experiment name wandb")
+    parser.add_argument("--exp_name", type=str, default="_New", help="Name of the experiment for Weights & Biases logging")
 
-    #Pretrain parameters
-    parser.add_argument("--batch_size", type=int, default=256, help="Batch size")
-    parser.add_argument("--num_workers", type=int, default=12, help="Number of worker")
-    parser.add_argument("--epochs", type=int, default=200, help="Number of epochs")
+    # Pretraining parameters
+    parser.add_argument("--batch_size", type=int, default=256, help="Batch size for training")
+    parser.add_argument("--num_workers", type=int, default=12, help="Number of data loading workers")
+    parser.add_argument("--epochs", type=int, default=200, help="Total number of training epochs")
     parser.add_argument("--lr", type=float, default=1e-4, help="Learning rate")
 
-    # FGSM Attack at training time as augmentation
-    parser.add_argument("--aug_fgsm", type=str2bool, default=True, help="If True Train the model with fsgm as augmentations ")
-    parser.add_argument("--rand_epsilon", type=str2bool, default=False, help="If True use a random epsilon for fgsm between 0.01 and 0.2")
-    parser.add_argument("--epsilon", type=float, default=0.05, help="Epsilon for FGSM Attack at training time")
+    # FGSM attack as data augmentation during training
+    parser.add_argument("--aug_fgsm", type=str2bool, default=True, help="Enable FGSM-based data augmentation during training")
+    parser.add_argument("--rand_epsilon", type=str2bool, default=False, help="Use a random epsilon value between 0.01 and 0.2 for FGSM")
+    parser.add_argument("--epsilon", type=float, default=0.05, help="Fixed epsilon value for FGSM (ignored if --rand_epsilon is True)")
 
-    # Pretrain CCN
-    parser.add_argument("--train_cnn", type=str2bool, default=True, help="If True Train the CNN Model")
-    parser.add_argument("--cnn_ty", type=str2bool, default=False, help="If True use the CNN Model (more power), False use CNN2 Model")
+    # CNN pretraining
+    parser.add_argument("--train_cnn", type=str2bool, default=True, help="Enable training of the CNN model")
+    parser.add_argument("--cnn_ty", type=str2bool, default=False, help="If True, use the more powerful CNN model; if False, use CNN2")
 
-    # Pretrain AutoEncoder
-    parser.add_argument("--train_AE", type=str2bool, default=False, help="If True Train the AE Model")
+    # Autoencoder pretraining
+    parser.add_argument("--train_AE", type=str2bool, default=False, help="Enable training of the autoencoder model")
 
     args = parser.parse_args()
 
@@ -42,6 +42,7 @@ def main():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     add_name = "rand" if args.rand_epsilon else str(args.epsilon)
 
+    # Train the CNN
     if args.train_cnn:
 
         if args.cnn_ty:
@@ -75,7 +76,7 @@ def main():
 
         torch.save(model.state_dict(), "Models/" + model_name + ".pth")
 
-
+    # Train the autoencoder
     if args.train_AE:
 
         model_name = "AE_pretrain"
