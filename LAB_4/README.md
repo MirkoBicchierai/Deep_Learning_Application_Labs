@@ -52,6 +52,53 @@ python pretrain.py [--options]
 
 ### Training base results
 
+#### CNN and CNN2 Models
+
+The **CNN** model is more expressive and stable compared to the **CNN2** model, which is simpler and requires fewer epochs to converge to a reasonable performance.  
+Specifically:
+- **CNN2** converges in approximately **200 epochs**
+- **CNN** converges in about **50 epochs**  
+
+Both models are trained using the **Adam optimizer** with a learning rate of **0.0001**, and a **cosine annealing scheduler**.
+
+The **adversarial loss (`loss_adv`)** shown in the plots refers to the loss computed when the input batch is perturbed using the **FGSM (Fast Gradient Sign Method)**.
+
+<table>
+  <tr>
+    <td><img src="plot/CNN-LOSS.png" alt="CNN-LOSS"></td>
+    <td><img src="plot/CNN-ADVLOSS.png" alt="CNN-ADVLOSS"></td>
+  </tr>
+  <tr>
+    <td><img src="plot/VAL-CCN-LOSS.png" alt="VAL-CCN-LOSS"></td>
+    <td><img src="plot/VAL-CCN-ACC.png" alt="VAL-CCN-ACC"></td>
+  </tr>
+</table>
+
+Overall, the CNN model achieves better accuracy than CNN2.  
+FGSM-based data augmentation was tested using different epsilon values: **0.05**, **0.1**, and a **random value** uniformly sampled between **0.01 and 0.15**.  
+This augmentation helps the CNN model reduce overfitting on the training set and improves generalization—especially when using **random epsilon**, which yielded the best performance in terms of accuracy.
+
+---
+
+### AutoEncoder Model
+
+All AutoEncoder models are trained for **200 epochs** using the **Adam optimizer** (learning rate: **0.0001**) and a **cosine annealing scheduler**.  
+The loss function used is **Mean Squared Error (MSELoss)**, calculated on the reconstruction output.  
+The **adversarial loss (`loss_adv`)** shown in the graphs represents the loss when the input batch is perturbed using **FGSM**.
+
+<table>
+  <tr>
+    <td><img src="plot/AE-LOSS.png" alt="AE-LOSS"></td>
+    <td><img src="plot/AE-LOSSADV.png" alt="AE-LOSSADV"></td>
+  </tr>
+  <tr>
+    <td><img src="plot/VAL-AE-LOSS.png" alt="VAL-AE-LOSS"></td>
+    <td></td>
+  </tr>
+</table>
+
+FGSM-based augmentation was evaluated with the same epsilon values as above: **0.05**, **0.1**, and a **random value between 0.01 and 0.15**.
+
 ## Exercise 1
 
 To run all evaluations for all pretrained models and save results to `plot/es1/`:
