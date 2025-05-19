@@ -1,7 +1,8 @@
 # Adversarial Training on Neural Networks
 
 This repository contains 
-code for experiments on CNN models and Autoencoders, focusing on adversarial training and FGSM (Fast Gradient Sign Method) attacks.
+code for 
+experiments on CNN models and Autoencoders, focusing on adversarial training and FGSM (Fast Gradient Sign Method) attacks.
 
 All experiments (CNN/CNN2 and AutoEncoder model training) can be viewed on wandb:
 [https://wandb.ai/AI-UNIFI/DLA_LAB_4](https://wandb.ai/AI-UNIFI/DLA_LAB_4?nw=nwusermirkobicchierai)
@@ -137,7 +138,7 @@ python es.py [--options]
 ### AutoEncoder Model
 
 <details>
-  <summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid black;">🔍 Auto Encoder Vanilla Model</summary>
+  <summary style="font-weight: bold; padding: 5px;">🔍 Auto Encoder Vanilla Model</summary>
 
 <table>
   <tr>
@@ -153,7 +154,7 @@ python es.py [--options]
 </details>
 <br>
 <details>
-<summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid black;">🔍 Auto Encoder model with FGSM as augmentation at training time with a random epsilon between 0.01 and 0.15 </summary>
+<summary style="font-weight: bold; padding: 5px;">🔍 Auto Encoder model with FGSM as augmentation at training time with a random epsilon between 0.01 and 0.15 </summary>
 <br>
 
 <table>
@@ -170,7 +171,7 @@ python es.py [--options]
 </details>
 <br>
 <details>
-<summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid black;">🔍 Auto Encoder model with FGSM as augmentation with fixed epsilon 0.05</summary>
+<summary style="font-weight: bold; padding: 5px;">🔍 Auto Encoder model with FGSM as augmentation with fixed epsilon 0.05</summary>
 <br>
 
 <table>
@@ -187,7 +188,7 @@ python es.py [--options]
 </details>
 <br>
 <details>
-<summary style="font-weight: bold; padding: 5px; border-radius: 5px; border: 1px solid black;">🔍 Auto Encoder model with FGSM as augmentation with fixed epsilon 0.1</summary>
+<summary style="font-weight: bold; padding: 5px;">🔍 Auto Encoder model with FGSM as augmentation with fixed epsilon 0.1</summary>
 <br>
 
 <table>
@@ -238,8 +239,117 @@ python es2-3.py [--options]
 --target_class INT    Target class index for exercise 3.3 (default: 0)
 ```
 
-### Result Exercise 2.1
+### Result Exercise 2
 
-### Result Exercise 2.2
+#### CNN2 Model
+
+When trained normally (without adversarial augmentation), the model's accuracy drops immediately to 0% under an FGSM attack at any tested epsilon value. However, when trained with FGSM as a data augmentation technique, the model becomes significantly more robust to such attacks.  
+
+The best performance is observed when a random epsilon between 0.01 and 0.15 is used for FGSM during training.  
+
+The model was evaluated using FGSM attacks with the following epsilon values: `[0, 0.05, 0.075, 0.1, 0.125, 0.15]`.
+
+<table>
+  <tr>
+    <td><img src="plot/es2/FGSM_eps_CNN2_pretrain.png"></td>
+    <td><img src="plot/es2/FGSM_EXAMPLE_IMG_CNN2_pretrain.png"></td>
+  </tr>  
+  <tr> 
+    <td><img src="plot/es2/FGSM_eps_CNN2_pretrain_aug_0.05.png"></td>
+    <td><img src="plot/es2/FGSM_EXAMPLE_IMG_CNN2_pretrain_aug_0.05.png"></td></tr>  
+  <tr>
+    <td><img src="plot/es2/FGSM_eps_CNN2_pretrain_aug_0.1.png"></td>
+    <td><img src="plot/es2/FGSM_EXAMPLE_IMG_CNN2_pretrain_aug_0.1.png"></td>
+  </tr>   
+  <tr>
+    <td><img src="plot/es2/FGSM_eps_CNN2_pretrain_aug_rand.png"></td>
+    <td><img src="plot/es2/FGSM_EXAMPLE_IMG_CNN2_pretrain_aug_rand.png"></td>
+  </tr>  
+</table>
+
+#### CNN Model
+
+When trained normally (without adversarial augmentation), the model's accuracy drops immediately to 0% under an FGSM attack at any tested epsilon value. However, when trained with FGSM as a data augmentation technique, the model becomes significantly more robust to such attacks.  
+
+The best performance is observed when a random epsilon between 0.01 and 0.15 is used for FGSM during training.  
+
+The model was evaluated using FGSM attacks with the following epsilon values: `[0, 0.05, 0.075, 0.1, 0.125, 0.15]`.  
+
+The slightly lower accuracy at small epsilon values (e.g., 0.05) may be due to the fact that it lies near the edge of the uniform distribution `[0.01, 0.15]` used during training. As a result, the model may have seen fewer examples with such low perturbation strengths, reducing its robustness in that region.
+
+<table>
+  <tr>
+    <td><img src="plot/es2/FGSM_eps_CNN_pretrain.png"></td>
+    <td><img src="plot/es2/FGSM_EXAMPLE_IMG_CNN_pretrain.png"></td>
+  </tr>  
+  <tr> 
+    <td><img src="plot/es2/FGSM_eps_CNN_pretrain_aug_0.05.png"></td>
+    <td><img src="plot/es2/FGSM_EXAMPLE_IMG_CNN_pretrain_aug_0.05.png"></td></tr>  
+  <tr>
+    <td><img src="plot/es2/FGSM_eps_CNN_pretrain_aug_0.1.png"></td>
+    <td><img src="plot/es2/FGSM_EXAMPLE_IMG_CNN_pretrain_aug_0.1.png"></td>
+  </tr>   
+  <tr>
+    <td><img src="plot/es2/FGSM_eps_CNN_pretrain_aug_rand.png"></td>
+    <td><img src="plot/es2/FGSM_EXAMPLE_IMG_CNN_pretrain_aug_rand.png"></td>
+  </tr>  
+</table>
+
+#### AE Model
+
+In terms of reconstruction loss (measured by MSE Loss), the autoencoder model performs better when FGSM is used as a data augmentation technique during training, with a random epsilon sampled between 0.01 and 0.15.  
+
+I evaluated all pretrained autoencoders using FGSM attacks with the following epsilon values: `[0, 0.05, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2]`.
+
+In general the Autoencoder models seems more robust than the CNN and CNN2 model at this type of attack.
+
+<table>
+  <tr>
+    <td><img src="plot/es2/FGSM_eps_AE_pretrain.png"></td>
+    <td><img src="plot/es2/FGSM_EXAMPLE_IMG_AE_pretrain.png"></td>
+  </tr>  
+  <tr> 
+    <td><img src="plot/es2/FGSM_eps_AE_pretrain_aug_0.05.png"></td>
+    <td><img src="plot/es2/FGSM_EXAMPLE_IMG_AE_pretrain_aug_0.05.png"></td></tr>  
+  <tr>
+    <td><img src="plot/es2/FGSM_eps_AE_pretrain_aug_0.1.png"></td>
+    <td><img src="plot/es2/FGSM_EXAMPLE_IMG_AE_pretrain_aug_0.1.png"></td>
+  </tr>   
+  <tr>
+    <td><img src="plot/es2/FGSM_eps_AE_pretrain_aug_rand.png"></td>
+    <td><img src="plot/es2/FGSM_EXAMPLE_IMG_AE_pretrain_aug_rand.png"></td>
+  </tr>  
+</table>
+
 
 ### Result Exercise 3.3
+
+#### CNN Model
+
+For the CNN model, using a random epsilon value appears to perform better than other configurations. The tested epsilon values for the targeted attack are: `[0, 0.05, 0.075, 0.1, 0.125, 0.15]`. In this case, the targeted class is class 0.
+
+<table>
+  <tr>
+    <td><img src="plot/es3/FGSM_SUCCESS_RATE_TARGET_0_CNN_pretrain.png" alt="AE_pretrain_aug_0.1_score_"></td>
+    <td><img src="plot/es3/FGSM_SUCCESS_RATE_TARGET_0_CNN_pretrain_aug_0.05.png" alt="AE_pretrain_aug_0.1_score_hist_"></td>
+  </tr>  
+  <tr>
+    <td><img src="plot/es3/FGSM_SUCCESS_RATE_TARGET_0_CNN_pretrain_aug_0.1.png" alt="AE_pretrain_aug_0.1_roc_curve_"></td>
+    <td><img src="plot/es3/FGSM_SUCCESS_RATE_TARGET_0_CNN_pretrain_aug_rand.png" alt="AE_pretrain_aug_0.1_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+#### CNN2 Model
+
+For the CNN2 model, using a random epsilon does not appear to improve performance in this case. It performs similarly to using a fixed epsilon of 0.1. The tested epsilon values for the targeted attack are: `[0, 0.05, 0.075, 0.1, 0.125, 0.15]`. In this experiment, the targeted class is class 0.
+
+<table>
+  <tr>
+    <td><img src="plot/es3/FGSM_SUCCESS_RATE_TARGET_0_CNN2_pretrain.png" alt="AE_pretrain_aug_0.1_score_"></td>
+    <td><img src="plot/es3/FGSM_SUCCESS_RATE_TARGET_0_CNN2_pretrain_aug_0.05.png" alt="AE_pretrain_aug_0.1_score_hist_"></td>
+  </tr>  
+  <tr>
+    <td><img src="plot/es3/FGSM_SUCCESS_RATE_TARGET_0_CNN2_pretrain_aug_0.1.png" alt="AE_pretrain_aug_0.1_roc_curve_"></td>
+    <td><img src="plot/es3/FGSM_SUCCESS_RATE_TARGET_0_CNN2_pretrain_aug_rand.png" alt="AE_pretrain_aug_0.1_precision_recall_curve_"></td>
+  </tr>
+</table>
