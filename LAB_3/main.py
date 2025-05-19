@@ -37,7 +37,7 @@ def get_parser():
     return args
 
 
-# Function that perform a test of the pretrained model output on the dataset rotten_tomatoes
+# Function that perform a test of the pretrained model output on the dataset stanfordnlp/sst2 or rotten_tomatoes
 def test_output_model(dataset_name, tokenizer, model):
     dataset = load_dataset(dataset_name, split="train")
 
@@ -81,7 +81,7 @@ def extract_cls_embeddings(text_list, tokenizer, model):
     return cls_embeddings.numpy()
 
 
-# Extract features for one split "train", "teste" and "val"
+# Extract features for one split "train", "test" and "val"
 def get_split_embeddings(dataset_split, dataset, tokenizer, model):
     features = []
     labels = []
@@ -119,15 +119,14 @@ def main():
     model = AutoModel.from_pretrained(model_name)
     test_output_model(args.dataset, tokenizer, model)
 
-    # EXERCISE 1.3
+    # EXERCISE 1.3, compute the baseline of accuracy on the dataset selected in the parser with a SCV linear
     if args.check_baseLine:
-
-        scaler = StandardScaler()
 
         x_train, y_train = get_split_embeddings("train", dataset, tokenizer, model)
         x_val, y_val = get_split_embeddings("validation", dataset, tokenizer, model)
 
-        # The other dataset stanfordnlp/sst2 don't have the label on the test set
+        scaler = StandardScaler()  # Define a scaler obj to scale the x
+        # The other dataset stanfordnlp/sst2 don't have the label on the test set, do only for rotten_tomatoes dataset
         if args.dataset == "rotten_tomatoes":
             x_test, y_test = get_split_embeddings("test", dataset, tokenizer, model)
             x_test_scaled = scaler.transform(x_test)
@@ -135,16 +134,16 @@ def main():
         x_train_scaled = scaler.fit_transform(x_train)
         x_val_scaled = scaler.transform(x_val)
 
-        clf = SVC(kernel='linear', max_iter=1000)
+        clf = SVC(kernel='linear', max_iter=1000) # I use max_iter=1000, i try higher value but was computationally unsustainable
         clf.fit(x_train_scaled, y_train)
 
         val_pred = clf.predict(x_val_scaled)
-        print("Validation Accuracy (Base Line):", accuracy_score(y_val, val_pred))  # 0.8095684803001876 rotten_tomatoes, 0.6523 stanfordnlp/sst2
+        print("Validation Accuracy (Base Line):", accuracy_score(y_val, val_pred))  # 0.8095 rotten_tomatoes, 0.6523 stanfordnlp/sst2
 
         # The other dataset stanfordnlp/sst2 don't have the label on the test set
         if args.dataset == "rotten_tomatoes":
             test_pred = clf.predict(x_test_scaled)
-            print("Test Accuracy (Base Line):", accuracy_score(y_test, test_pred))  # 0.7917448405253283 rotten_tomatoes
+            print("Test Accuracy (Base Line):", accuracy_score(y_test, test_pred))  # 0.7917 rotten_tomatoes
 
     # EXERCISE 2 (.1 .2 .3) and 3.1
 
@@ -169,6 +168,7 @@ def main():
 
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
+    # load the model distilbert-base-uncased with the classification task has 2 classes (binary classification).
     model = AutoModelForSequenceClassification.from_pretrained(
         "distilbert-base-uncased",
         num_labels=2,
@@ -176,6 +176,7 @@ def main():
         label2id={"negative": 0, "positive": 1}  # mappings labels
     )
 
+    # Define the trainer arguments
     training_args = TrainingArguments(
         output_dir="./results",
         run_name="distilbert-classification-experiment",
@@ -195,6 +196,7 @@ def main():
     for name, param in model.named_parameters():
             print(f"parameter: {name}, Shape: {param.shape}, Requires grad: {param.requires_grad}")
 
+    # IF args.lora is true use lora to fine tune the model else fine tune the all model
     if args.lora:
         lora_config = LoraConfig(
             r=args.lora_rank,  # rank of the low-rank decomposition
@@ -205,9 +207,10 @@ def main():
             task_type=TaskType.SEQ_CLS
         )
 
+        # instantiate the lora model using peft library
         model = get_peft_model(model, lora_config)
 
-        # Print detailed information about LoRA layers
+        # Print detailed information about LoRA layers (is a simple check)
         print("=== LoRA LAYERS DETAILS ===")
         for name, param in model.named_parameters():
             if 'lora' in name:
@@ -234,7 +237,7 @@ def main():
     # Fine tune the model
     trainer.train()
 
-    # The other dataset stanfordnlp/sst2 don't have the label on the test set
+    # The other dataset stanfordnlp/sst2 don't have the label on the test set, do it only for rotten_tomatoes dataset
     if args.dataset == "rotten_tomatoes":
         # Evaluate on test set
         test_results = trainer.evaluate(eval_dataset=tokenized_datasets["test"])

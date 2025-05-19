@@ -1,10 +1,8 @@
-
-"""
-Function used to define the type of an attribute inside of the parser for the main, to parse for example '--Residual true'
-"""
 import wandb
 
-
+"""
+Function used to define the type of an attribute inside of the parser for the main, to parse for example '--lora true'
+"""
 def str2bool(v):
     if isinstance(v, bool):
         return v
@@ -19,7 +17,6 @@ def str2bool(v):
 """
 Function to define the wandb parameters for the main.py 
 """
-
 def config_loggers(args):
 
     if args.lora:
