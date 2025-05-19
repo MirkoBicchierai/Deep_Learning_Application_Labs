@@ -1,6 +1,7 @@
 # Adversarial Training on Neural Networks
 
-This repository contains code for experiments on CNN models and Autoencoders, focusing on adversarial training and FGSM (Fast Gradient Sign Method) attacks.
+This repository contains 
+code for experiments on CNN models and Autoencoders, focusing on adversarial training and FGSM (Fast Gradient Sign Method) attacks.
 
 All experiments (CNN/CNN2 and AutoEncoder model training) can be viewed on wandb:
 [https://wandb.ai/AI-UNIFI/DLA_LAB_4](https://wandb.ai/AI-UNIFI/DLA_LAB_4?nw=nwusermirkobicchierai)
@@ -130,6 +131,70 @@ python es.py [--options]
 ```
 
 ### Result Exercise 1
+
+### CNN and CNN2 Models
+
+### AutoEncoder Model
+
+<details>
+<summary>Auto Encoder vanilla model</summary>
+<br>
+
+<table>
+  <tr>
+    <td><img src="plot/es1/AE_pretrain_score_.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/AE_pretrain_score_hist_.png" alt="AE_pretrain_score_hist_"></td>
+    <td><img src="plot/es1/AE_pretrain_roc_curve_.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/AE_pretrain_precision_recall_curve_.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+</details>
+
+<details>
+<summary>Auto Encoder model with FGSM as augmentation at training time with a random epsilon between 0.01 and 0.15 </summary>
+<br>
+
+<table>
+  <tr>
+    <td><img src="plot/es1/AE_pretrain_aug_rand_score_.png" alt="AE_pretrain_aug_rand_score_"></td>
+    <td><img src="plot/es1/AE_pretrain_aug_rand_score_hist_.png" alt="AE_pretrain_aug_rand_score_hist_"></td>
+    <td><img src="plot/es1/AE_pretrain_aug_rand_roc_curve_.png" alt="AE_pretrain_aug_rand_roc_curve_"></td>
+    <td><img src="plot/es1/AE_pretrain_aug_rand_precision_recall_curve_.png" alt="AE_pretrain_aug_rand_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+</details>
+
+<details>
+<summary>Auto Encoder model with FGSM as augmentation with fixed epsilon 0.05</summary>
+<br>
+
+<table>
+  <tr>
+    <td><img src="plot/es1/AE_pretrain_aug_0.05_score_.png" alt="AE_pretrain_aug_0.1_score_"></td>
+    <td><img src="plot/es1/AE_pretrain_aug_0.05_score_hist_.png" alt="AE_pretrain_aug_0.1_score_hist_"></td>
+    <td><img src="plot/es1/AE_pretrain_aug_0.05_roc_curve_.png" alt="AE_pretrain_aug_0.1_roc_curve_"></td>
+    <td><img src="plot/es1/AE_pretrain_aug_0.05_precision_recall_curve_.png" alt="AE_pretrain_aug_0.1_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+</details>
+
+<details>
+<summary>Auto Encoder model with FGSM as augmentation with fixed epsilon 0.1</summary>
+<br>
+
+<table>
+  <tr>
+    <td><img src="plot/es1/AE_pretrain_aug_0.1_score_.png" alt="AE_pretrain_aug_0.1_score_"></td>
+    <td><img src="plot/es1/AE_pretrain_aug_0.1_score_hist_.png" alt="AE_pretrain_aug_0.1_score_hist_"></td>
+    <td><img src="plot/es1/AE_pretrain_aug_0.1_roc_curve_.png" alt="AE_pretrain_aug_0.1_roc_curve_"></td>
+    <td><img src="plot/es1/AE_pretrain_aug_0.1_precision_recall_curve_.png" alt="AE_pretrain_aug_0.1_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+</details>
 
 ## Exercise 2 and 3.3
 

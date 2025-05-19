@@ -179,7 +179,7 @@ def main():
         # Using logit
         scores_test = compute_scores(modelCNN, test_dataloader, max_logit, device)
         scores_fake = compute_scores(modelCNN, fake_dataloader, max_logit, device)
-        plot_score(scores_test, scores_fake, model_name, save_path="plot/es1/", score_fun="max_softmax")
+        plot_score(scores_test, scores_fake, model_name, save_path="plot/es1/", score_fun="max_logit")
 
         # Using max_softmax
         scores_test = compute_scores(modelCNN, test_dataloader, lambda l: max_softmax(l, t = args.temp), device)
