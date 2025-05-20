@@ -359,7 +359,15 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
 
 </details>
 
-<br>
+As shown in the histograms, the vanilla model is not able to clearly distinguish between real and fake data. However, its performance improves when FGSM is used as a data augmentation technique during training.  
+
+When FGSM is used as a data augmentation technique during training, OOD (Out-of-Distribution) performance improves, especially when a random epsilon between 0.01 and 0.15 is used.  
+
+However, even with this setup, OOD detection remains challenging. As shown in the histograms, the real and fake data distributions still partially overlap, indicating that the separation is not fully achieved.
+
+Overall, better results are obtained when using the `max_softmax` score (with temperature fixed at 1000) instead of relying directly on the raw logits.
+
+This model, however, appears to be more unstable than the CNN model—both in terms of OOD detection and during the training phase, as shown in the following results.
 
 ### CNN Model
 
@@ -578,6 +586,15 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
 
 </details>
 
+In terms of raw accuracy on the test set, the CNN model outperforms CNN2, as can be seen in the confusion matrices. It also achieves better results in terms of ROC and Precision-Recall curves compared to CNN2.  
+
+As shown in the histograms, the vanilla model is not able to clearly distinguish between real and fake data. However, its performance improves when FGSM is used as a data augmentation technique during training.  
+
+When FGSM is applied with a fixed epsilon of 0.05, the model still struggles to separate the two distributions effectively. On the other hand, good results are achieved when training with FGSM using either a higher fixed epsilon or a random epsilon sampled between 0.01 and 0.15, the latter yielding the best anomaly detection performance.  
+
+Overall, better results are obtained when using the `max_softmax` score (with temperature fixed at 1000) instead of relying directly on the raw logits.
+
+
 ### AutoEncoder Model
 
 <details>
@@ -646,6 +663,12 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
 </table>
 
 </details>
+
+In general, the AutoEncoder model is more robust and better suited for anomaly detection, as shown by the plots, especially the scores in the histogram, which clearly highlight this.  
+
+Training the model with FGSM as a data augmentation technique sometimes leads to slightly better performance, but the improvement is marginal in the context of this experiment.
+
+In all cases, the network appears to detect the difference between real and fake data much more effectively than CNN-based models.
 
 ## Exercise 2 and 3.3
 
