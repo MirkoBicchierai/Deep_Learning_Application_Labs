@@ -34,15 +34,11 @@ def plot_confusion_matrix_accuracy(y_gt, y_pred, test_dataloader, model_name, sa
 
     cmn = (100 * cmn).astype(np.int32)
     disp = metrics.ConfusionMatrixDisplay(cmn, display_labels=test_dataloader.dataset.classes)
+
     disp.plot()
-    plt.title("Confusion Matrix - " + model_name)
+    plt.title("Confusion Matrix - " + model_name + " - Accuracy:" + str(round(accuracy.item() * 100, 2)) + "%")
     plt.savefig(save_path + model_name + "_confusion_matrix.png")
     plt.close()
-
-    cmn = cm.astype(np.float32)
-    cmn /= cmn.sum(1)
-    print(f'Per class accuracy: {np.diag(cmn).mean():.4f}')
-
 
 """
 Plots and saves score-related visualizations for an autoencoder or CNN model.
@@ -87,13 +83,14 @@ def plot_score(scores_test, scores_fake, model_name, save_path="plot/es1/", scor
     roc_ax = fig.axes[0]
     roc_ax.set_title("ROC Curve - " + model_name + " - " + score_fun)
     fig.savefig(save_path + model_name + "_roc_curve_"+score_fun+".png")
+    plt.close(fig)
 
     pr = metrics.PrecisionRecallDisplay.from_predictions(y.cpu(), y_pred.cpu())
     fig = pr.figure_
     pr_ax = fig.axes[0]
     pr_ax.set_title("Precision-Recall Curve - " + model_name + " - " + score_fun)
     fig.savefig(save_path + model_name + "_precision_recall_curve_"+score_fun+".png")
-
+    plt.close(fig)
 
 """
 Plots the output logits and corresponding softmax probabilities of a CNN model for a specific sample,

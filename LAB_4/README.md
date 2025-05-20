@@ -147,6 +147,52 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
 <details>
   <summary style="font-weight: bold; padding: 5px;">🔍 CNN2 Vanilla Model</summary>
 
+![CNN2_pretrain_confusion_matrix.png](plot/es1/CNN2_pretrain_confusion_matrix.png)
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_logit_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_logit_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_softmax_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_softmax_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN2_pretrain_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN2_pretrain_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_score_max_softmax.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_score_hist_max_softmax.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN2_pretrain_roc_curve_max_softmax.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_precision_recall_curve_max_softmax.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
 </details>
 
 <br>
@@ -154,6 +200,52 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
 <details>
 <summary style="font-weight: bold; padding: 5px;">🔍 CNN2 model with FGSM as augmentation at training time with a random epsilon between 0.01 and 0.15 </summary>
 <br>
+
+![CNN2_pretrain_aug_rand_confusion_matrix.png](plot/es1/CNN2_pretrain_aug_rand_confusion_matrix.png)
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_logit_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_logit_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_softmax_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_softmax_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_score_max_softmax.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_score_hist_max_softmax.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_roc_curve_max_softmax.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_rand_precision_recall_curve_max_softmax.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
 
 </details>
 
@@ -163,6 +255,53 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
 <summary style="font-weight: bold; padding: 5px;">🔍 CNN2 model with FGSM as augmentation with fixed epsilon 0.05</summary>
 <br>
 
+
+![CNN2_pretrain_aug_0.05_confusion_matrix.png](plot/es1/CNN2_pretrain_aug_0.05_confusion_matrix.png)
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_logit_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_logit_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_softmax_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_softmax_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_score_max_softmax.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_score_hist_max_softmax.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_roc_curve_max_softmax.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_precision_recall_curve_max_softmax.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
 </details>
 
 <br>
@@ -171,12 +310,106 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
 <summary style="font-weight: bold; padding: 5px;">🔍 CNN2 model with FGSM as augmentation with fixed epsilon 0.1</summary>
 <br>
 
+
+![CNN2_pretrain_aug_0.1_confusion_matrix.png](plot/es1/CNN2_pretrain_aug_0.1_confusion_matrix.png)
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_logit_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_logit_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_softmax_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_softmax_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_score_max_softmax.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_score_hist_max_softmax.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_roc_curve_max_softmax.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_precision_recall_curve_max_softmax.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
 </details>
 
 <br>
 
 <details>
   <summary style="font-weight: bold; padding: 5px;">🔍 CNN Vanilla Model</summary>
+
+
+![CNN_pretrain_confusion_matrix.png](plot/es1/CNN_pretrain_confusion_matrix.png)
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_logit_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_logit_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_softmax_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_softmax_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN_pretrain_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN_pretrain_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN_pretrain_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN_pretrain_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_score_max_softmax.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_score_hist_max_softmax.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN_pretrain_roc_curve_max_softmax.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN_pretrain_precision_recall_curve_max_softmax.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
 
 </details>
 
@@ -186,6 +419,52 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
 <summary style="font-weight: bold; padding: 5px;">🔍 CNN model with FGSM as augmentation at training time with a random epsilon between 0.01 and 0.15 </summary>
 <br>
 
+![CNN_pretrain_aug_rand_confusion_matrix.png](plot/es1/CNN_pretrain_aug_rand_confusion_matrix.png)
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_logit_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_logit_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_softmax_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_softmax_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_score_max_softmax.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_score_hist_max_softmax.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_roc_curve_max_softmax.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_rand_precision_recall_curve_max_softmax.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
 </details>
 
 <br>
@@ -194,6 +473,52 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
 <summary style="font-weight: bold; padding: 5px;">🔍 CNN model with FGSM as augmentation with fixed epsilon 0.05</summary>
 <br>
 
+![CNN_pretrain_aug_0.05_confusion_matrix.png](plot/es1/CNN_pretrain_aug_0.05_confusion_matrix.png)
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_logit_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_logit_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_softmax_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_softmax_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_score_max_softmax.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_score_hist_max_softmax.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_roc_curve_max_softmax.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.05_precision_recall_curve_max_softmax.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
 </details>
 
 <br>
@@ -201,6 +526,53 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
 <details>
 <summary style="font-weight: bold; padding: 5px;">🔍 CNN model with FGSM as augmentation with fixed epsilon 0.1</summary>
 <br>
+
+
+![CNN_pretrain_aug_0.1_confusion_matrix.png](plot/es1/CNN_pretrain_aug_0.1_confusion_matrix.png)
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_logit_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_logit_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_softmax_Fake%20data.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_softmax_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
+  </tr> 
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table> 
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_score_max_logit.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_score_max_softmax.png" alt="AE_pretrain_score_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_score_hist_max_softmax.png" alt="AE_pretrain_score_hist_"></td>
+  </tr>  
+  <tr>    
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_roc_curve_max_softmax.png" alt="AE_pretrain_roc_curve_"></td>
+    <td><img src="plot/es1/CNN_pretrain_aug_0.1_precision_recall_curve_max_softmax.png" alt="AE_pretrain_precision_recall_curve_"></td>
+  </tr>
+</table>
 
 </details>
 
