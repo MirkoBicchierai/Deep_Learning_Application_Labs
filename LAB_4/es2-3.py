@@ -299,7 +299,8 @@ def get_parser():
 def main():
     args = get_parser()
 
-    _, _, test_dataloader, _, _ = get_dataloaders("CIFAR10", 1, num_workers=args.num_workers) # Use batch size 1
+    # Get CIFAR10 dataloaders (see utilis.py)
+    _, _, test_dataloader, _, _ = get_dataloaders(1, num_workers=args.num_workers) # Use batch size 1
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 

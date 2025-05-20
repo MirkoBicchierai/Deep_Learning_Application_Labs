@@ -37,7 +37,8 @@ def main():
     args = get_parser()
     config_loggers(args)
 
-    train_dataloader, val_dataloader, test_dataloader, num_classes, input_size = get_dataloaders("CIFAR10", args.batch_size, num_workers=args.num_workers)
+    # Get CIFAR10 dataloaders (see utilis.py)
+    train_dataloader, val_dataloader, test_dataloader, num_classes, input_size = get_dataloaders(args.batch_size, num_workers=args.num_workers)
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     add_name = "rand" if args.rand_epsilon else str(args.epsilon)

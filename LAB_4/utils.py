@@ -72,8 +72,7 @@ def get_fake_loaders(batch_size, num_workers):
 
 """
     Loads and prepares data loaders for the specified dataset.
-    Supports MNIST, CIFAR10. Applies appropriate normalization and
-    transforms to each dataset. Splits the training set into a training and 
+    Applies appropriate normalization and transforms to dataset. Splits the training set into a training and 
     validation subset (validation set has 5000 samples).
     Returns:
         - train_dataloader: DataLoader for training data.
@@ -82,34 +81,19 @@ def get_fake_loaders(batch_size, num_workers):
         - num_classes (int): Number of output classes for the dataset.
         - input_size (int): Flattened size of a single input sample.
 """
-def get_dataloaders(name, batch_size, num_workers):
-    ds_train, ds_test, num_classes, input_size = None, None, 0, 0
+def get_dataloaders(batch_size, num_workers):
 
-    if name == "CIFAR10":
-        transform = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize(
-                mean=[0.4914, 0.4822, 0.4465],
-                std=[0.2470, 0.2435, 0.2616]
-            )
-        ])
-        ds_train = CIFAR10(root='./data', train=True, download=True, transform=transform)
-        ds_test = CIFAR10(root='./data', train=False, download=True, transform=transform)
-        num_classes = 10
-        input_size = 32 * 32 * 3
-
-    if name == "CIFAR100":
-        transform = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize(
-                mean=[0.5071, 0.4867, 0.4408],
-                std=[0.2675, 0.2565, 0.2761]
-            )
-        ])
-        ds_train = CIFAR100(root='./data', train=True, download=True, transform=transform)
-        ds_test = CIFAR100(root='./data', train=False, download=True, transform=transform)
-        num_classes = 100
-        input_size = 32 * 32 * 3
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize(
+            mean=[0.4914, 0.4822, 0.4465],
+            std=[0.2470, 0.2435, 0.2616]
+        )
+    ])
+    ds_train = CIFAR10(root='./data', train=True, download=True, transform=transform)
+    ds_test = CIFAR10(root='./data', train=False, download=True, transform=transform)
+    num_classes = 10
+    input_size = 32 * 32 * 3
 
     # Split train into train and validation.
     val_size = 5000

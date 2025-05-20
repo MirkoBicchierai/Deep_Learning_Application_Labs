@@ -147,7 +147,9 @@ def get_parser():
 def main():
     args = get_parser()
 
-    train_dataloader, _, test_dataloader, _, _ = get_dataloaders("CIFAR10", args.batch_size, num_workers=args.num_workers)
+    # Get CIFAR10 dataloaders (see utilis.py)
+    train_dataloader, _, test_dataloader, _, _ = get_dataloaders(args.batch_size, num_workers=args.num_workers)
+
     fake_dataloader = get_fake_loaders(args.batch_size, num_workers=args.num_workers)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
