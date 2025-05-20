@@ -321,7 +321,9 @@ When FGSM is used as a data augmentation technique during training, OOD (Out-of-
 
 However, even with this setup, OOD detection remains challenging. As shown in the histograms, the real and fake data distributions still partially overlap, indicating that the separation is not fully achieved.
 
-Overall, better results are obtained when using the `max_softmax` score (with temperature fixed at 1000) instead of relying directly on the raw logits.
+Overall, there doesn't appear to be a consistent performance advantage when using either `max_logit` or `max_softmax` (with the temperature fixed at 1000) as the scoring function. In some cases, one performs slightly better than the other and vice versa, as shown in the plots.  
+
+It is possible that fine-tuning the temperature hyperparameter `T` in `max_softmax` could lead to improved performance.
 
 This model, however, appears to be more unstable than the CNN model—both in terms of OOD detection and during the training phase, as shown in the following results.
 
@@ -505,6 +507,10 @@ As shown in the histograms, the vanilla model is not able to clearly distinguish
 When FGSM is applied with a fixed epsilon of 0.05, the model still struggles to separate the two distributions effectively. On the other hand, good results are achieved when training with FGSM using either a higher fixed epsilon or a random epsilon sampled between 0.01 and 0.15, the latter yielding the best anomaly detection performance.  
 
 Overall, better results are obtained when using the `max_softmax` score (with temperature fixed at 1000) instead of relying directly on the raw logits.
+
+Overall, there doesn't appear to be a consistent performance advantage when using either `max_logit` or `max_softmax` (with the temperature fixed at 1000) as the scoring function. In some cases, one performs slightly better than the other and vice versa, as shown in the plots.  
+
+It is possible that fine-tuning the temperature hyperparameter `T` in `max_softmax` could lead to improved performance.
 
 
 ### AutoEncoder Model
