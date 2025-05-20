@@ -171,17 +171,6 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
   </tr>
 </table>
 
-<table> 
-  <tr>
-    <td><img src="plot/es1/CNN2_pretrain_score_max_logit.png" alt="AE_pretrain_score_"></td>
-    <td><img src="plot/es1/CNN2_pretrain_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
-  </tr>  
-  <tr>    
-    <td><img src="plot/es1/CNN2_pretrain_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
-    <td><img src="plot/es1/CNN2_pretrain_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
-  </tr>
-</table>
-
 <table>
   <tr>
     <td><img src="plot/es1/CNN2_pretrain_score_max_softmax.png" alt="AE_pretrain_score_"></td>
@@ -212,17 +201,6 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
     <td><img src="plot/es1/CNN2_pretrain_aug_rand_softmax_Fake%20data.png" alt="AE_pretrain_score_"></td>
     <td><img src="plot/es1/CNN2_pretrain_aug_rand_softmax_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
   </tr> 
-</table>
-
-<table> 
-  <tr>
-    <td><img src="plot/es1/CNN2_pretrain_aug_rand_score_max_logit.png" alt="AE_pretrain_score_"></td>
-    <td><img src="plot/es1/CNN2_pretrain_aug_rand_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
-  </tr>  
-  <tr>    
-    <td><img src="plot/es1/CNN2_pretrain_aug_rand_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
-    <td><img src="plot/es1/CNN2_pretrain_aug_rand_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
-  </tr>
 </table>
 
 <table> 
@@ -280,17 +258,6 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
   </tr>
 </table>
 
-<table> 
-  <tr>
-    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_score_max_logit.png" alt="AE_pretrain_score_"></td>
-    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
-  </tr>  
-  <tr>    
-    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
-    <td><img src="plot/es1/CNN2_pretrain_aug_0.05_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
-  </tr>
-</table>
-
 <table>
   <tr>
     <td><img src="plot/es1/CNN2_pretrain_aug_0.05_score_max_softmax.png" alt="AE_pretrain_score_"></td>
@@ -322,17 +289,6 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
     <td><img src="plot/es1/CNN2_pretrain_aug_0.1_softmax_Fake%20data.png" alt="AE_pretrain_score_"></td>
     <td><img src="plot/es1/CNN2_pretrain_aug_0.1_softmax_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
   </tr> 
-</table>
-
-<table> 
-  <tr>
-    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_score_max_logit.png" alt="AE_pretrain_score_"></td>
-    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
-  </tr>  
-  <tr>    
-    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
-    <td><img src="plot/es1/CNN2_pretrain_aug_0.1_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
-  </tr>
 </table>
 
 <table> 
@@ -399,17 +355,6 @@ This model, however, appears to be more unstable than the CNN model—both in te
   </tr>
 </table>
 
-<table> 
-  <tr>
-    <td><img src="plot/es1/CNN_pretrain_score_max_logit.png" alt="AE_pretrain_score_"></td>
-    <td><img src="plot/es1/CNN_pretrain_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
-  </tr>  
-  <tr>    
-    <td><img src="plot/es1/CNN_pretrain_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
-    <td><img src="plot/es1/CNN_pretrain_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
-  </tr>
-</table>
-
 <table>
   <tr>
     <td><img src="plot/es1/CNN_pretrain_score_max_softmax.png" alt="AE_pretrain_score_"></td>
@@ -440,17 +385,6 @@ This model, however, appears to be more unstable than the CNN model—both in te
     <td><img src="plot/es1/CNN_pretrain_aug_rand_softmax_Fake%20data.png" alt="AE_pretrain_score_"></td>
     <td><img src="plot/es1/CNN_pretrain_aug_rand_softmax_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
   </tr> 
-</table>
-
-<table> 
-  <tr>
-    <td><img src="plot/es1/CNN_pretrain_aug_rand_score_max_logit.png" alt="AE_pretrain_score_"></td>
-    <td><img src="plot/es1/CNN_pretrain_aug_rand_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
-  </tr>  
-  <tr>    
-    <td><img src="plot/es1/CNN_pretrain_aug_rand_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
-    <td><img src="plot/es1/CNN_pretrain_aug_rand_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
-  </tr>
 </table>
 
 <table> 
@@ -507,17 +441,6 @@ This model, however, appears to be more unstable than the CNN model—both in te
   </tr>
 </table>
 
-<table> 
-  <tr>
-    <td><img src="plot/es1/CNN_pretrain_aug_0.05_score_max_logit.png" alt="AE_pretrain_score_"></td>
-    <td><img src="plot/es1/CNN_pretrain_aug_0.05_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
-  </tr>  
-  <tr>    
-    <td><img src="plot/es1/CNN_pretrain_aug_0.05_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
-    <td><img src="plot/es1/CNN_pretrain_aug_0.05_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
-  </tr>
-</table>
-
 <table>
   <tr>
     <td><img src="plot/es1/CNN_pretrain_aug_0.05_score_max_softmax.png" alt="AE_pretrain_score_"></td>
@@ -549,17 +472,6 @@ This model, however, appears to be more unstable than the CNN model—both in te
     <td><img src="plot/es1/CNN_pretrain_aug_0.1_softmax_Fake%20data.png" alt="AE_pretrain_score_"></td>
     <td><img src="plot/es1/CNN_pretrain_aug_0.1_softmax_Real%20data.png" alt="AE_pretrain_score_hist_"></td>
   </tr> 
-</table>
-
-<table> 
-  <tr>
-    <td><img src="plot/es1/CNN_pretrain_aug_0.1_score_max_logit.png" alt="AE_pretrain_score_"></td>
-    <td><img src="plot/es1/CNN_pretrain_aug_0.1_score_hist_max_logit.png" alt="AE_pretrain_score_hist_"></td>
-  </tr>  
-  <tr>    
-    <td><img src="plot/es1/CNN_pretrain_aug_0.1_roc_curve_max_logit.png" alt="AE_pretrain_roc_curve_"></td>
-    <td><img src="plot/es1/CNN_pretrain_aug_0.1_precision_recall_curve_max_logit.png" alt="AE_pretrain_precision_recall_curve_"></td>
-  </tr>
 </table>
 
 <table> 
