@@ -142,7 +142,7 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
   </tr>
 </table>
 
-### CNN and CNN2 Models
+### CNN2 Model
 
 <details>
   <summary style="font-weight: bold; padding: 5px;">🔍 CNN2 Vanilla Model</summary>
@@ -360,6 +360,8 @@ An example of real data (taken from `torchvision.datasets.CIFAR10`) and fake dat
 </details>
 
 <br>
+
+### CNN Model
 
 <details>
   <summary style="font-weight: bold; padding: 5px;">🔍 CNN Vanilla Model</summary>
