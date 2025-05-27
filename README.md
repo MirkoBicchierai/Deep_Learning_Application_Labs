@@ -11,3 +11,29 @@ To support the results, you can also visit the following public Weights & Biases
 - **LAB_4:** [https://wandb.ai/AI-UNIFI/DLA_LAB_4?nw=nwusermirkobicchierai](https://wandb.ai/AI-UNIFI/DLA_LAB_4?nw=nwusermirkobicchierai)  
 
 Feel free to explore the projects and the documentation provided.
+
+## ⚙️ Setup Instructions
+
+To get started, clone the repository and install the required Python packages.
+
+```bash
+# Clone the repository
+git clone https://github.com/MirkoBicchierai/Deep_Learning_Application_Labs
+cd DLA-LAB
+```
+
+Recommend using a virtual environment (e.g., `venv`, `conda`) to manage dependencies:
+
+```bash
+# Create and activate a virtual environment (example using conda)
+conda create -n DLA-LAB 
+conda activate DLA-LAB
+```
+
+Then install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+Each lab may contain additional setup notes or specific dependencies, which are documented in the corresponding subfolder’s `README.md`.
