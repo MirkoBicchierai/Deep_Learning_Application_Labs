@@ -35,5 +35,3 @@ Then install the required packages:
 ```bash
 pip install -r requirements.txt
 ```
-
-Each lab may contain additional setup notes or specific dependencies, which are documented in the corresponding subfolder’s `README.md`.
