@@ -17,7 +17,7 @@ Gradients are computed via backpropagation on one batch from the provided datalo
 A bar plot of the L2 norms of gradients is generated and logged to Weights & Biases (wandb).
 """
 
-def gradient_norm(model, dataloader, device):
+def gradient_norm(model, dataloader, device, args):
 
     data, labels = next(iter(dataloader))
     data = data.to(device)
@@ -53,7 +53,8 @@ def gradient_norm(model, dataloader, device):
     plt.legend()
     plt.grid(True, linestyle="--", alpha=0.5)
 
-    wandb.log({"Gradient Norm Plot": wandb.Image(plt)})
+    if args.use_wandb:
+        wandb.log({"Gradient Norm Plot": wandb.Image(plt)})
 
 
 def get_parser():
@@ -78,6 +79,9 @@ def get_parser():
 
     #Dataset
     parser.add_argument("--dataset", type=str, choices=["MNIST", "CIFAR10"], default="MNIST", help="Choose dataset from MNIST, CIFAR10")
+
+    #Use wandb
+    parser.add_argument("--use_wandb", type=str2bool, default=False, help="If True use wandb")
 
     args = parser.parse_args()
 
@@ -112,14 +116,16 @@ def main():
         if args.scheduler:
             scheduler.step()
 
-        wandb.log({"Train-" + model_type + "-" + args.dataset: {"Loss": loss, "epoch": epoch}, "Validation-" + model_type + "-" + args.dataset: {"Loss": val_loss, "Accuracy":accuracy, "epoch": epoch}})
+        if args.use_wandb:
+            wandb.log({"Train-" + model_type + "-" + args.dataset: {"Loss": loss, "epoch": epoch}, "Validation-" + model_type + "-" + args.dataset: {"Loss": val_loss, "Accuracy":accuracy, "epoch": epoch}})
         train_bar.set_postfix(epoch_loss=f"{loss:.4f}")
 
     accuracy, _, _ = test(model, test_dataloader, device)
-    wandb.log({"Test-" + model_type + "-" + args.dataset: {"Accuracy": accuracy}})
+    if args.use_wandb:
+        wandb.log({"Test-" + model_type + "-" + args.dataset: {"Accuracy": accuracy}})
     print("Test accuracy: {}".format(accuracy))
 
-    gradient_norm(model, train_dataloader, device)
+    gradient_norm(model, train_dataloader, device, args)
 
     torch.save(model.state_dict(), "Models/"+model_name_save+".pth")
 

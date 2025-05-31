@@ -385,8 +385,9 @@ Function to define the wandb parameters for the pretrain.py
 """
 def config_loggers(args):
 
-    wandb.init(
-        project="DLA_LAB_4",
-        config=vars(args),
-        name=args.exp_name,
-    )
+    if args.use_wandb:
+        wandb.init(
+            project="DLA_LAB_4",
+            config=vars(args),
+            name=args.exp_name,
+        )

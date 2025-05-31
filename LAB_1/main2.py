@@ -31,6 +31,9 @@ def get_parser():
     parser.add_argument("--residual", type=str2bool, default=True, help="True if the pretrained model use the skip connection trick.")
     parser.add_argument("--layers", type=int, nargs="+", default=[2, 2, 2, 2], help="Layer pattern of the pretrained model loaded.") #[5, 6, 8, 5]
 
+    # Use wandb
+    parser.add_argument("--use_wandb", type=str2bool, default=False, help="If True use wandb")
+
     args = parser.parse_args()
 
     return args
@@ -154,12 +157,14 @@ def main():
         if args.scheduler:
             scheduler.step()
 
-        wandb.log({"Exercise2/Validation": {"Top1-Accuracy": top1, "Top5-Accuracy": top5, "Loss": val_loss, "Epoch": epoch},"Exercise2/Train": {"Loss": loss, "Epoch": epoch}})
+        if args.use_wandb:
+            wandb.log({"Exercise2/Validation": {"Top1-Accuracy": top1, "Top5-Accuracy": top5, "Loss": val_loss, "Epoch": epoch},"Exercise2/Train": {"Loss": loss, "Epoch": epoch}})
         train_bar.set_postfix(epoch_loss=f"{loss:.4f}")
 
     top1, top5, _ = test(model, test_dataloader, device)
 
-    wandb.log({"Exercise2/Test": {"Top1-Accuracy": top1, "Top5-Accuracy": top5}})
+    if args.use_wandb:
+        wandb.log({"Exercise2/Test": {"Top1-Accuracy": top1, "Top5-Accuracy": top5}})
     print("Test accuracy: {}".format(top1))
 
 if "__main__" == __name__:

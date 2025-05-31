@@ -32,6 +32,9 @@ def get_parser():
     parser.add_argument("--epochs", type=int, default=10, help="Number of epochs to train for")
     parser.add_argument("--batch_size", type=int, default=20, help="Batch size to train for")
 
+    # Use wandb
+    parser.add_argument("--use_wandb", type=str2bool, default=False, help="If True use wandb")
+
     args = parser.parse_args()
 
     return args
@@ -190,7 +193,7 @@ def main():
         logging_dir="./logs",
         logging_steps=10,
         load_best_model_at_end=True,
-        report_to="wandb",
+        report_to = "wandb" if args.use_wandb else None,
     )
 
     for name, param in model.named_parameters():
@@ -242,12 +245,13 @@ def main():
         # Evaluate on test set
         test_results = trainer.evaluate(eval_dataset=tokenized_datasets["test"])
         print(test_results)
-        wandb.log({
-            "test/accuracy": test_results["eval_accuracy"],
-            "test/precision": test_results["eval_precision"],
-            "test/recall": test_results["eval_recall"],
-            "test/f1": test_results["eval_f1"]
-        })
+        if args.use_wandb:
+            wandb.log({
+                "test/accuracy": test_results["eval_accuracy"],
+                "test/precision": test_results["eval_precision"],
+                "test/recall": test_results["eval_recall"],
+                "test/f1": test_results["eval_f1"]
+            })
 
 if __name__ == "__main__":
     main()

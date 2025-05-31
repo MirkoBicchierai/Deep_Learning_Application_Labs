@@ -171,12 +171,13 @@ def config_loggers_ex1(args):
 
     model_name_save = model_type + "-" + res + "-" + sch
 
-    wandb.init(
-        project="DLA_LAB_1",
-        name=model_type + "-" + args.dataset + "-" + res + "-" + formatted_lr + "-" + sch,
-        config=vars(args),
-        group=res
-    )
+    if args.use_wandb:
+        wandb.init(
+            project="DLA_LAB_1",
+            name=model_type + "-" + args.dataset + "-" + res + "-" + formatted_lr + "-" + sch,
+            config=vars(args),
+            group=res
+        )
 
     return model_name_save
 
@@ -191,9 +192,10 @@ def config_loggers_ex2(args):
     sch = "Scheduler" if args.scheduler else "No Scheduler"
     formatted_lr = f"{args.lr:.0e}".replace("e+00", "e+0").replace("e-00", "e-0")
 
-    wandb.init(
-        project="DLA_LAB_1",
-        name = model_type + "-" + res + "-" + formatted_lr + "-" + sch + "-" + args.optimizer + "-FLayer" + str(args.num_layers),
-        config=vars(args),
-        group="Fine Tuning"
-    )
+    if args.use_wandb:
+        wandb.init(
+            project="DLA_LAB_1",
+            name = model_type + "-" + res + "-" + formatted_lr + "-" + sch + "-" + args.optimizer + "-FLayer" + str(args.num_layers),
+            config=vars(args),
+            group="Fine Tuning"
+        )

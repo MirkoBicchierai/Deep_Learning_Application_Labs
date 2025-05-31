@@ -9,6 +9,7 @@ def get_parser():
     parser = argparse.ArgumentParser(description="Hyperparameter settings")
 
     #wandb
+    parser.add_argument("--use_wandb", type=str2bool, default=False, help="If True use wandb")
     parser.add_argument("--exp_name", type=str, default="_New", help="Name of the experiment for Weights & Biases logging")
 
     # Pretraining parameters
@@ -66,13 +67,15 @@ def main():
             accuracy, _, val_loss = test_CNN(model, val_dataloader, device)
             scheduler.step()
 
-            wandb.log({"Train-CNN": {"Loss": loss_clean, "Loss_adv": loss_adv, "epoch": epoch},
+            if args.use_wandb:
+                wandb.log({"Train-CNN": {"Loss": loss_clean, "Loss_adv": loss_adv, "epoch": epoch},
                        "Validation-CNN": {"Loss": val_loss, "Accuracy": accuracy, "epoch": epoch}})
 
             train_bar.set_postfix(epoch_loss_clean=f"{loss_clean:.4f}", epoch_loss_adv=f"{loss_adv:.4f}")
 
         accuracy, _, _ = test_CNN(model, test_dataloader, device)
-        wandb.log({"Test-CNN": {"Accuracy": accuracy}})
+        if args.use_wandb:
+            wandb.log({"Test-CNN": {"Accuracy": accuracy}})
         print("Test accuracy CNN: {}".format(accuracy))
 
         torch.save(model.state_dict(), "Models/" + model_name + ".pth")
@@ -95,7 +98,8 @@ def main():
             _, val_loss = test_AE(model, val_dataloader, device)
             scheduler.step()
 
-            wandb.log({"Train-AE": {"Loss": loss_clean, "Loss_adv": loss_adv, "epoch": epoch},
+            if args.use_wandb:
+                wandb.log({"Train-AE": {"Loss": loss_clean, "Loss_adv": loss_adv, "epoch": epoch},
                        "Validation-AE": {"Loss": val_loss, "epoch": epoch}})
 
             train_bar.set_postfix(epoch_loss=f"{loss_clean:.4f}", epoch_loss_adv=f"{loss_adv:.4f}")

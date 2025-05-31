@@ -27,9 +27,10 @@ def config_loggers(args):
     formatted_lr = f"{args.lr:.0e}".replace("e+00", "e+0").replace("e-00", "e-0")
     exp_name = prex + "-lr:" + formatted_lr + "-batch_size:" + str(args.batch_size)
 
-    wandb.init(
-        project="DLA_LAB_3",
-        config=vars(args),
-        name=exp_name,
-    )
+    if args.use_wandb:
+        wandb.init(
+            project="DLA_LAB_3",
+            config=vars(args),
+            name=exp_name,
+        )
 
